@@ -36,6 +36,7 @@ Route::get('/delete/{id}',[DiscussionController::class,'delete'])->where('id','^
 Route::get('/edit/{id}',[DiscussionController::class,'edit_post'])->where('id','^\d+$');
 Route::post('/update_post',[DiscussionController::class,'update_post']);
 
+Route::post('/dicussions/{{ $discussion->id }}/comments/', 'CommentsController@store');
 
 Route::get('/{lang?}',function ($lang ='en'){
     return view('/');

@@ -20,11 +20,13 @@ class Discussion extends Model
     }
 
 
-
     public function comments()
     {
 
-        return $this->morphMany(related:Comment::class, name:'commentable');
+         return $this->hasMany(Comment::class);       
+
     }
+
+    
 }
 
