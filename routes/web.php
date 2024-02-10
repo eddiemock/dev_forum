@@ -5,7 +5,7 @@ use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\LocalizationController;
 use App\Http\Middleware\Localization;
-
+use App\Http\Controllers\CommentsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,7 +36,9 @@ Route::get('/delete/{id}',[DiscussionController::class,'delete'])->where('id','^
 Route::get('/edit/{id}',[DiscussionController::class,'edit_post'])->where('id','^\d+$');
 Route::post('/update_post',[DiscussionController::class,'update_post']);
 
-Route::post('/dicussions/{{ $discussion->id }}/comments/', 'CommentsController@store');
+Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
+
+
 
 Route::get('/{lang?}',function ($lang ='en'){
     return view('/');
