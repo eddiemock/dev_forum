@@ -24,7 +24,7 @@ use App\Http\Controllers\LikeController;
 // });
 
 Route::get('/',[SiteController::class,'index']);
-Route::get('/login',[SiteController::class,'login'])->middleware('protectedpage');
+Route::get('/login', [SiteController::class, 'login'])->middleware('protectedpage')->name('login');
 Route::post('/login',[SiteController::class,'confirm_login']);
 Route::get('/register',[SiteController::class,'register'])->middleware('protectedpage');
 Route::post('/register',[SiteController::class,'register_confirm']);
@@ -40,13 +40,8 @@ Route::post('/update_post',[DiscussionController::class,'update_post']);
 
 Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
 
-Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])
-    ->name('discussion.like')
-    ->middleware('auth');
-
-    Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])
-    ->name('discussion.unlike')
-    ->middleware('auth');
+Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->middleware('auth')->name('discussion.like');
+Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->middleware('auth')->name('discussion.unlike');
 
 
 Route::get('/{lang?}',function ($lang ='en'){
