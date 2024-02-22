@@ -40,8 +40,8 @@ Route::post('/update_post',[DiscussionController::class,'update_post']);
 
 Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
 
-Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->middleware('auth')->name('discussion.like');
-Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->middleware('auth')->name('discussion.unlike');
+Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like');
+Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->name('discussion.unlike');
 
 
 Route::get('/{lang?}',function ($lang ='en'){
