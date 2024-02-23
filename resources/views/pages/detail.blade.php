@@ -23,7 +23,7 @@
 
 
                         </strong>
-                       
+                
                         
                         {{ $comment->body }}
 
@@ -35,22 +35,33 @@
 </div>
 
 <div class="card">
+    <div class="card-block">
+        <form method="POST" action="/detail/{{ $discussion->id }}/comments">
+            {{ csrf_field() }}
+            <div class="form-group">
+                <textarea name="body" placeholder="Your comment here." class="form-control"></textarea>
+            </div>
 
-        <div class="card-block">
+            {{-- Display errors or messages --}}
+            @if(session('message'))
+                <div class="alert alert-success">
+                    {{ session('message') }}
+                </div>
+            @endif
 
-                <form method="POST" action="/detail/{{ $discussion->id }}/comments">
-
-                        {{ csrf_field() }}
-                          <div class="form-group">
-
-                                <textarea name="body" placeholder="Your comment here." class="form-control">  </textarea>
-                        </div>
-        
-                        <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Add Comment</button>
-                        </div>
-                </form>
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </div>
+        </form>
+    </div>
 </div>
+
 
 
 </div>
