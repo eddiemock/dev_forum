@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Discussion;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,10 +10,9 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        $comments = Comment::all(); // Or apply any filtering/sorting you need
-        $users = User::all(); // Or apply any filtering/sorting you need
-
-        return view('admin.dashboard', compact('comments', 'users'));
+        $discussions = Discussion::all();
+        $unapprovedComments = Comment::where('is_approved', 0)->get();
+        return view('admin.dashboard', compact('discussions', 'unapprovedComments'));
     }
 
     public function comments()
@@ -31,9 +30,11 @@ class AdminController extends Controller
         return back()->with('success', 'Comment approved successfully.');
     }
 
-    public function users()
+    public function deleteComment($id)
     {
-        $users = User::all();
-        return view('admin.users', compact('users'));
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+
+        return back()->with('success', 'Comment deleted successfully.');
     }
 }

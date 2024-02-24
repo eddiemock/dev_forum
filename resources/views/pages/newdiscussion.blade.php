@@ -30,6 +30,12 @@
       <span class="text-danger">@error('password'){{ $message }} @enderror</span>
     </div>
    
+    <div class="form-group">
+      <label for="tags">Tags</label>
+      <input type="text" class="form-control" name="tags" placeholder="Enter tags separated by commas">
+      <span class="text-danger">@error('tags'){{ $message }} @enderror</span>
+    </div>
+
     <button type="submit" class="btn btn-primary">{{__('profile.Submit')}}</button>
   </form>
 

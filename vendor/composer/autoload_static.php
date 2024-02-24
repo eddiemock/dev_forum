@@ -540,6 +540,7 @@ class ComposerStaticInit7759431e303e2d722a264a8a991a9e84
         'App\\Http\\Middleware\\isLoggedin' => __DIR__ . '/../..' . '/app/Http/Middleware/isLoggedin.php',
         'App\\Models\\Comment' => __DIR__ . '/../..' . '/app/Models/Comment.php',
         'App\\Models\\Discussion' => __DIR__ . '/../..' . '/app/Models/Discussion.php',
+        'App\\Models\\Tag' => __DIR__ . '/../..' . '/app/Models/Tag.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

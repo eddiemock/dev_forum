@@ -5,20 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Discussion;
+use App\Models\Tag; 
 use Illuminate\Support\Facades\DB;
 
 class SiteController extends Controller
 {
-    public function index(){
-        // show all posts by a user
-        // $user = User::where('id', 1)->first();
-        // return dd($user->discussions);
-    
+    public function index(Request $request)
+{
+    $tags = Tag::all();
+    $selectedTag = $request->input('tag');
 
-        $discussions = Discussion::orderBy('created_at','desc')->paginate(20);
-
-        return view('pages.index', compact('discussions'));
+    if ($selectedTag) {
+        $tag = Tag::findOrFail($selectedTag);
+        $discussions = $tag->discussions()->paginate(10);
+    } else {
+        $discussions = Discussion::paginate(10);
     }
+
+    return view('pages.index', compact('tags', 'discussions', 'selectedTag'));
+}
+
 
     public function login(){
         return view('pages.login');

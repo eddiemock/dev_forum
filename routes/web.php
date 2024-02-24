@@ -49,11 +49,12 @@ Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->n
 
 
 
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/comments', [AdminController::class, 'comments'])->name('admin.comments');
-    Route::post('/comments/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comments.approve');
-    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
-
+    Route::post('/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
+    Route::delete('/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
+});
 
 
 Route::get('/{lang?}',function ($lang ='en'){

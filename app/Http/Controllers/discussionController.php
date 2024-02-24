@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Tag;
 use App\Models\Discussion;
 
 class DiscussionController extends Controller
@@ -15,26 +15,39 @@ class DiscussionController extends Controller
    }
 
    public function confirm_new_discussion(Request $request){
-       $validated_data = $request->validate([
-           'title' => 'required',
-           'description' => 'required|max:150',
-           'brief' => 'required',
-       ]);
+    $validated_data = $request->validate([
+        'title' => 'required',
+        'description' => 'required|max:150',
+        'brief' => 'required',
+        'tags' => 'nullable|string',
+    ]);
 
-    //    return dd($request);
+    $discussion = new Discussion;
+    $discussion->post_title = $request->input('title');
+    $discussion->user_id = session('id');
+    $discussion->description = $request->input('description');
+    $discussion->brief = $request->input('brief');
+    $discussion->save();
 
-       $user = new Discussion;
-       $user->post_title =$request->input('title');
-       $user->user_id = session('id');
-       $user->description =$request->input('description');
-       $user->brief =$request->input('brief');
-       $user->save();
+    // Handle tags if provided
+    if ($request->filled('tags')) {
+        $tagNames = array_map('trim', explode(',', $request->input('tags')));
+        $tagIds = [];
 
-       $message = "You have successfully created  new discussion";
-       
-       return redirect('/')->with('success', $message); 
+        foreach ($tagNames as $tagName) {
+            $tag = Tag::firstOrCreate(['name' => $tagName]);
+            $tagIds[] = $tag->id;
+        }
 
-   }
+        // Attach tags to the discussion
+        $discussion->tags()->sync($tagIds);
+    }
+
+    $message = "You have successfully created a new discussion";
+    
+    return redirect('/')->with('success', $message); 
+}
+
 
    public function dashboard(){
 
@@ -105,6 +118,17 @@ public function update_post(Request $request){
     
 
 }
+
+public function addTagToDiscussion(Request $request, Discussion $discussion)
+    {
+        // Assuming you're receiving tag IDs as an array from the request
+        $tagIds = $request->input('tag_ids');
+
+        // Attach tags to the discussion
+        $discussion->tags()->sync($tagIds);
+
+        return back()->with('message', 'Tags added successfully.');
+    }
 
 }
 
