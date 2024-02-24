@@ -27,4 +27,11 @@ public function likes()
     return $this->belongsToMany(Discussion::class, 'likes_table')->withTimestamps();
 }
 
+
+public function comments()
+{
+    return $this->hasMany(Comment::class);
 }
+
+}
+

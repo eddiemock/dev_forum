@@ -1,3 +1,4 @@
+User
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
@@ -8,7 +9,7 @@ use App\Http\Controllers\LocalizationController;
 use App\Http\Middleware\Localization;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\LikeController;
-
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,32 +25,36 @@ use App\Http\Controllers\LikeController;
 //     return view('welcome');
 // });
 
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [SiteController::class, 'login'])->name('login');
-    Route::post('/login', [SiteController::class, 'confirm_login']);
-    Route::get('/register', [SiteController::class, 'register']);
-    Route::post('/register', [SiteController::class, 'register_confirm']);
-    
-});
+Route::get('/',[SiteController::class,'index']);
+Route::get('/login', [SiteController::class, 'login'])->middleware('protectedpage')->name('login');
+Route::post('/login',[SiteController::class,'confirm_login']);
+Route::get('/register',[SiteController::class,'register'])->middleware('protectedpage');
+Route::post('/register',[SiteController::class,'register_confirm']);
+Route::get('/logout', [SiteController::class, 'logout']);
 
-// Routes accessible by authenticated users
-Route::middleware('auth')->group(function () {
-    Route::get('/logout', [SiteController::class, 'logout']);
-    Route::get('/new_discussion', [DiscussionController::class, 'new_discussion']);
-    Route::post('/new_discussion', [DiscussionController::class, 'confirm_new_discussion']);
-    Route::get('/dashboard', [DiscussionController::class, 'dashboard']);
-    Route::get('/detail/{id}', [DiscussionController::class, 'detail'])->where('id', '^\d+$');
-    Route::get('/delete/{id}', [DiscussionController::class, 'delete'])->where('id', '^\d+$');
-    Route::get('/edit/{id}', [DiscussionController::class, 'edit_post'])->where('id', '^\d+$');
-    Route::post('/update_post', [DiscussionController::class, 'update_post']);
-    Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
-    Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like');
-    Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->name('discussion.unlike');
-});
+Route::post('/new_discussion',[DiscussionController::class,'confirm_new_discussion']);
+Route::get('/new_discussion',[DiscussionController::class,'new_discussion']);
+Route::get('/dashboard',[DiscussionController::class,'dashboard']);
+Route::get('/detail/{id}',[DiscussionController::class,'detail'])->where('id','^\d+$');
+Route::get('/delete/{id}',[DiscussionController::class,'delete'])->where('id','^\d+$');
+Route::get('/edit/{id}',[DiscussionController::class,'edit_post'])->where('id','^\d+$');
+Route::post('/update_post',[DiscussionController::class,'update_post']);
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
-});
+Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store'])->middleware('auth');
+
+
+Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like')->middleware('auth');
+Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->name('discussion.unlike')->middleware('auth');
+
+
+
+
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/comments', [AdminController::class, 'comments'])->name('admin.comments');
+    Route::post('/comments/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comments.approve');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+
+
 
 Route::get('/{lang?}',function ($lang ='en'){
     return view('/');

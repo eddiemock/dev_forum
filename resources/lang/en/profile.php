@@ -17,4 +17,6 @@ return [
     'Username' => 'Username',
     'Confirm Password' => 'Confirm Password',
     'Country' => 'Country',
+    'Admin Dashboard' => 'Admin Dashboard',
+
 ] ; ?>

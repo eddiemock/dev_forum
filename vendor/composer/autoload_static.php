@@ -519,6 +519,7 @@ class ComposerStaticInit7759431e303e2d722a264a8a991a9e84
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/AdminController.php',
         'App\\Http\\Controllers\\Admin\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/DashboardController.php',
         'App\\Http\\Controllers\\CommentsController' => __DIR__ . '/../..' . '/app/Http/Controllers/CommentsController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
@@ -528,6 +529,7 @@ class ComposerStaticInit7759431e303e2d722a264a8a991a9e84
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
+        'App\\Http\\Middleware\\EnsureUserIsAdmin' => __DIR__ . '/../..' . '/app/Http/Middleware/EnsureUserIsAdmin.php',
         'App\\Http\\Middleware\\Localization' => __DIR__ . '/../..' . '/app/Http/Middleware/Localization.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
