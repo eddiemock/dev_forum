@@ -20,7 +20,6 @@ class CommentsController extends Controller
 
     public function store(Request $request, Discussion $discussion)
 {
-
     Log::info('User Authenticated: ' . auth()->check());
     Log::info('User ID: ' . auth()->id());
 
@@ -39,14 +38,10 @@ class CommentsController extends Controller
         $isApproved = false;
     }
 
-    // Retrieve the currently authenticated user's ID
-    $userId = auth()->id();
-
-    // Save the comment with the is_approved flag and user_id
+    // Save the comment with the is_approved flag. Removed the user_id field.
     $comment = Comment::create([
         'body' => $commentText,
         'discussion_id' => $discussion->id,
-        'user_id' => $userId, // Set the user_id field to the ID of the currently authenticated user
         'is_approved' => $isApproved,
     ]);
 
@@ -54,6 +49,7 @@ class CommentsController extends Controller
 
     return back()->with('message', 'Your comment has been posted successfully.');
 }
+
 
 
 

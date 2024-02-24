@@ -40,7 +40,7 @@ Route::get('/delete/{id}',[DiscussionController::class,'delete'])->where('id','^
 Route::get('/edit/{id}',[DiscussionController::class,'edit_post'])->where('id','^\d+$');
 Route::post('/update_post',[DiscussionController::class,'update_post']);
 
-Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store'])->middleware('auth');
+Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
 
 
 Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like')->middleware('auth');
