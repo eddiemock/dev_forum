@@ -43,8 +43,8 @@ Route::post('/update_post',[DiscussionController::class,'update_post']);
 Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
 
 
-Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like')->middleware('auth');
-Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->name('discussion.unlike')->middleware('auth');
+Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like');
+Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->name('discussion.unlike');
 
 
 
