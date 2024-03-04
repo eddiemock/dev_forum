@@ -10,6 +10,8 @@ use App\Http\Middleware\Localization;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
+Use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,28 +27,32 @@ use App\Http\Controllers\AdminController;
 //     return view('welcome');
 // });
 
-Route::get('/',[SiteController::class,'index']);
-Route::get('/login', [SiteController::class, 'login'])->middleware('protectedpage')->name('login');
-Route::post('/login',[SiteController::class,'confirm_login']);
-Route::get('/register',[SiteController::class,'register'])->middleware('protectedpage');
-Route::post('/register',[SiteController::class,'register_confirm']);
-Route::get('/logout', [SiteController::class, 'logout']);
+Route::get('/',[HomeController::class,'index']);
+Route::get('/login', [HomeController::class, 'login'])->middleware('protectedpage')->name('login');
+Route::post('/login',[HomeController::class,'confirm_login'])->name('login');
+Route::get('/register',[HomeController::class,'register']);
+Route::post('/register',[HomeController::class,'register_confirm']);
+Route::post('logout', [HomeController::class, 'logout'])->name('logout')->middleware('auth');
 
+Route::middleware('web')->group(function () {
+Route::post('/categories/{category}/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
 Route::post('/new_discussion',[DiscussionController::class,'confirm_new_discussion']);
 Route::get('/new_discussion',[DiscussionController::class,'new_discussion']);
-Route::get('/dashboard',[DiscussionController::class,'dashboard']);
+Route::get('/dashboard',[HomeController::class,'dashboard']);
 Route::get('/detail/{id}',[DiscussionController::class,'detail'])->where('id','^\d+$');
 Route::get('/delete/{id}',[DiscussionController::class,'delete'])->where('id','^\d+$');
 Route::get('/edit/{id}',[DiscussionController::class,'edit_post'])->where('id','^\d+$');
 Route::post('/update_post',[DiscussionController::class,'update_post']);
-
+Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
 
 
 Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like');
 Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->name('discussion.unlike');
 
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 
+});
 
 
 Route::prefix('admin')->group(function () {

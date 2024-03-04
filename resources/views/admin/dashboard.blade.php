@@ -59,4 +59,22 @@
         </div>
     </div>
 </div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h2>Add New Category</h2>
+        <form method="POST" action="{{ route('categories.store') }}">
+            @csrf
+            <div class="form-group">
+                <label for="name">Category Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter category name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Category Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter category description"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Category</button>
+        </form>
+    </div>
+</div>
 @endsection

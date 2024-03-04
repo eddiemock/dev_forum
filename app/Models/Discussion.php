@@ -11,7 +11,7 @@ class Discussion extends Model
 
     protected $table = "discussions";
 
-    protected $fillable = ['title', 'description', 'brief'];
+    protected $fillable = ['post_title', 'description', 'brief', 'user_id', 'category_id'];
 
     
 
@@ -37,5 +37,11 @@ class Discussion extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function category()
+{
+    return $this->belongsTo(\App\Models\Category::class);
+}
+
 }
 

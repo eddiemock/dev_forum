@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class StartSession
 {
@@ -140,13 +141,19 @@ class StartSession
      * @return \Illuminate\Contracts\Session\Session
      */
     protected function startSession(Request $request, $session)
-    {
-        return tap($session, function ($session) use ($request) {
-            $session->setRequestOnHandler($request);
+{
+    return tap($session, function ($session) use ($request) {
+        $session->setRequestOnHandler($request);
 
-            $session->start();
-        });
-    }
+        $session->start();
+
+        // Log session data and user authentication state after session start
+        Log::info('Session started', [
+            'session_data' => $session->all(),
+            'user_authenticated' => auth()->check()
+        ]);
+    });
+}
 
     /**
      * Get the session implementation from the manager.

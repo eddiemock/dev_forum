@@ -13,52 +13,54 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 	</head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<a class="navbar-brand" href="/">{{__('profile.Discussion Forum')}}</a> 
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNavDropdown">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" href="/">{{__('profile.Home')}}</a>
-				</li>
-				@if (session('name'))
-					<li class="nav-item">
-						<a class="nav-link" href="/new_discussion">{{__('profile.New Discussion')}}</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/dashboard">{{__('profile.Dashboard')}}</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/register">{{ session('name') }}</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/logout">Logout</a>
-					</li>
-				@else
-					<li class="nav-item">
-						<a class="nav-link" href="/login">{{__('profile.Login')}}</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/register">{{__('profile.Register')}}</a>
-					</li>
-					<li class="nav-item">
-					 <a class="nav-link" href="{{ route('admin.dashboard') }}">{{ __('profile.Admin Dashboard') }}</a>
-					</li>
-				@endif
-				<div class="dropdown">
-					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					 Select Language
-					</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					  <a class="dropdown-item" href="/lang/en">English</a>
-					  <a class="dropdown-item" href="/lang/de">German</a>
-					</div>
-				  </div>
-			</ul>
-		</div>
-	</nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">{{__('profile.Discussion Forum')}}</a> 
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/">{{__('profile.Home')}}</a>
+            </li>
+            @auth
+                <li class="nav-item">
+                    <a class="nav-link" href="/new_discussion">{{__('profile.New Discussion')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">{{__('profile.Dashboard')}}</a>
+                </li>
+                <li class="nav-item">
+                    <!-- Displaying the user's name -->
+                    <a class="nav-link" href="#">{{ Auth::user()->name }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            @else
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">{{__('profile.Login')}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">{{__('profile.Register')}}</a>
+                </li>
+            @endauth
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.dashboard') }}">{{ __('profile.Admin Dashboard') }}</a>
+            </li>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Select Language
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/lang/en">English</a>
+                    <a class="dropdown-item" href="/lang/de">German</a>
+                </div>
+            </div>
+        </ul>
+    </div>
+</nav>
+
 
 	@include('layouts.flash')
 

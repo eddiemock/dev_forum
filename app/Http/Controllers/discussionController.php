@@ -7,72 +7,53 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
 use App\Models\Discussion;
-
+use App\Models\Category;
+use Illuminate\Support\Facades\Log;
 class DiscussionController extends Controller
 {
+
+    public function dashboard()
+{
+    $discussions = Discussion::all(); // Or any other query to get the discussions data
+    return view('pages.dashboard', compact('discussions'));
+}
     public function new_discussion(){
         return view('pages.newdiscussion');
    }
 
-   public function confirm_new_discussion(Request $request){
-    $validated_data = $request->validate([
-        'title' => 'required',
+   public function store(Request $request, Category $category)
+{
+    Log::info('Authenticated user ID:', ['user_id' => auth()->id()]);
+
+    $validatedData = $request->validate([
+        'post_title' => 'required',
         'description' => 'required|max:150',
         'brief' => 'required',
-        'tags' => 'nullable|string',
+        // other fields as necessary
     ]);
 
-    $discussion = new Discussion;
-    $discussion->post_title = $request->input('title');
-    $discussion->user_id = session('id');
-    $discussion->description = $request->input('description');
-    $discussion->brief = $request->input('brief');
+    $discussion = new Discussion($validatedData);
+    $discussion->user_id = auth()->id(); // Ensure this is not null
+    $discussion->category_id = $category->id;
+
+    Log::info('Discussion before saving:', ['discussion' => $discussion->toArray()]);
+
     $discussion->save();
 
     // Handle tags if provided
-    if ($request->filled('tags')) {
-        $tagNames = array_map('trim', explode(',', $request->input('tags')));
-        $tagIds = [];
-
+    if (!empty($validatedData['tags'])) {
+        $tagNames = array_map('trim', explode(',', $validatedData['tags']));
         foreach ($tagNames as $tagName) {
             $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $tagIds[] = $tag->id;
+            $discussion->tags()->attach($tag->id);
         }
-
-        // Attach tags to the discussion
-        $discussion->tags()->sync($tagIds);
     }
 
-    $message = "You have successfully created a new discussion";
-    
-    return redirect('/')->with('success', $message); 
+    return redirect()->route('categories.show', $category->id)->with('success', 'Discussion created successfully.');
 }
 
 
-   public function dashboard(){
 
-    $discussions = Discussion::where('user_id', session('id'))->get();
-    //  return dd($discussion);
-
-    return view('pages.dashboard', compact('discussions'));
-}
-
-public function detail($id){
-    $discussion = Discussion::where('id',$id)->FirstorFail();
-    // return var_dump($discussion);
-    return view('pages.detail',compact('discussion'));
-    
-}
-public function delete($id){
-    // return dd($id);
-    $data = Discussion::find($id);
-    // return dd($data);
-    $deleted = $data->delete();
-
-    // return dd($deleted);
-   
-    return redirect('/dashboard');
-}
 public function edit_post($id){
 
     
@@ -130,6 +111,12 @@ public function addTagToDiscussion(Request $request, Discussion $discussion)
         return back()->with('message', 'Tags added successfully.');
     }
 
+    public function category()
+{
+    return $this->belongsTo(Category::class);
 }
+}
+
+
 
 

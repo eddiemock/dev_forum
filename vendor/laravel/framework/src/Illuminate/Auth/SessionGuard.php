@@ -978,4 +978,6 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
     {
         return $this->timebox;
     }
+
+   
 }
