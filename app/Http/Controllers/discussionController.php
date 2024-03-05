@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
 use App\Models\Discussion;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 class DiscussionController extends Controller
 {
+
+    
 
     public function dashboard()
 {
@@ -23,21 +26,27 @@ class DiscussionController extends Controller
 
    public function store(Request $request, Category $category)
 {
-    Log::info('Authenticated user ID:', ['user_id' => auth()->id()]);
+    // Log the authenticated user ID
+    Log::info('Authenticated user ID:', ['user_id' => Auth::id()]);
 
+    // Validate the request data
     $validatedData = $request->validate([
-        'post_title' => 'required',
-        'description' => 'required|max:150',
-        'brief' => 'required',
-        // other fields as necessary
+        'post_title' => 'required|string|max:255',
+        'description' => 'required|string|max:150',
+        'brief' => 'required|string',
+        'tags' => 'nullable|string' // Assuming tags are submitted as a comma-separated string
+        // Add other fields as necessary
     ]);
 
+    // Create the discussion with the validated data
     $discussion = new Discussion($validatedData);
-    $discussion->user_id = auth()->id(); // Ensure this is not null
+    $discussion->user_id = Auth::id(); // Ensure this is not null
     $discussion->category_id = $category->id;
 
+    // Log the discussion details before saving
     Log::info('Discussion before saving:', ['discussion' => $discussion->toArray()]);
 
+    // Save the discussion
     $discussion->save();
 
     // Handle tags if provided
@@ -49,6 +58,7 @@ class DiscussionController extends Controller
         }
     }
 
+    // Redirect to the category page with a success message
     return redirect()->route('categories.show', $category->id)->with('success', 'Discussion created successfully.');
 }
 
@@ -115,6 +125,23 @@ public function addTagToDiscussion(Request $request, Discussion $discussion)
 {
     return $this->belongsTo(Category::class);
 }
+
+
+public function detail(Category $category, $id)
+{
+    // Fetch the discussion by its ID and category ID, and also load comments with the count of likers for each comment
+    $discussion = Discussion::where('category_id', $category->id)
+                            ->where('id', $id)
+                            ->with(['comments' => function($query) {
+                                $query->withCount('likers');
+                            }])
+                            ->firstOrFail();
+    
+    return view('pages.discussion_detail', compact('discussion', 'category'));
+}
+
+
+
 }
 
 

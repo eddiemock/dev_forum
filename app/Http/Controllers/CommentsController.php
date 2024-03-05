@@ -6,6 +6,7 @@ use App\Models\Discussion;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class CommentsController extends Controller
 {
@@ -25,6 +26,7 @@ class CommentsController extends Controller
         if (!$discussion) {
             return back()->withErrors(['message' => 'Discussion not found.']);
         }
+        $userId = Auth::id();
 
         // Get the comment text from the request
         $commentText = $request->input('body');
@@ -45,6 +47,7 @@ class CommentsController extends Controller
             'body' => $commentText,
             'discussion_id' => $discussion->id,
             'is_approved' => $isApproved,
+            'user_id' => $userId, // Assign the authenticated user's ID
         ]);
 
         Log::info('Comment saved', ['id' => $comment->id, 'is_approved' => $comment->is_approved]);

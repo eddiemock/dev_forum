@@ -39,7 +39,7 @@ class HomeController extends Controller
         $request->session()->regenerate();
 
         // Redirect to intended page or default to dashboard
-        return redirect()->intended('dashboard');
+        return redirect()->intended('/');
     }
 
     // Log failed authentication attempt

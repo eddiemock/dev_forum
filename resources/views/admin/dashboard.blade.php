@@ -63,7 +63,7 @@
 <div class="row mt-4">
     <div class="col-md-12">
         <h2>Add New Category</h2>
-        <form method="POST" action="{{ route('categories.store') }}">
+        <form method="POST" action="{{ route('admin.categories.store') }}">
             @csrf
             <div class="form-group">
                 <label for="name">Category Name</label>

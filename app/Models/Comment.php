@@ -20,4 +20,10 @@ public function user()
 {
     return $this->belongsTo(User::class);
 }
+public function likers()
+    {
+        return $this->belongsToMany(User::class, 'likes_table', 'comment_id', 'user_id')->withTimestamps();
+    }
+
+
 }
