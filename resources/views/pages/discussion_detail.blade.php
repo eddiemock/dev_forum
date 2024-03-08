@@ -4,10 +4,10 @@
 
 <p>Details page</p>
 <div class="container">
-    <p>{{ $discussion->post_title }}</p> <hr>
-    <p>{{ $discussion->description }}</p> <hr>
-    <p>{{ $discussion->brief }}</p> <hr>
-    <p>Written by: {{ $discussion->user->name }}</p>
+    <p><strong>Post Title:</strong> {{ $discussion->post_title }}</p> <hr>
+    <p><strong>Description:</strong> {{ $discussion->description }}</p> <hr>
+    <p><strong>Brief:</strong> {{ $discussion->brief }}</p> <hr>
+    <p><strong>Written by:</strong> {{ $discussion->user->name }}</p>
 
     {{-- Display tags --}}
     <div class="tags">
@@ -22,14 +22,28 @@
     <div class="comments">
         <ul class="list-group">
             @foreach ($discussion->comments as $comment)
-                @include('pages.like-button')
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>{{ $comment->created_at->diffForHumans() }}  &nbsp;</strong>
+                    <strong>{{ $comment->created_at->diffForHumans() }} by {{ $comment->user->name }}:</strong> {{-- Show the comment author --}}
                         {{ $comment->body }}
+                        <p>Likes: {{ $comment->likers_count }}</p>
                     </div>
-                    <div>
-                        {{-- Report button and dropdown menu --}}
+                    <div class="d-flex align-items-center">
+                        {{-- Like Button --}}
+                        <form action="{{ route('comment.like', ['comment' => $comment->id]) }}" method="POST" class="mr-2">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-thumbs-up"></i> Like
+                            </button>
+                        </form>
+                        {{-- Unlike Button --}}
+                        <form action="{{ route('comment.unlike', ['comment' => $comment->id]) }}" method="POST" class="mr-2">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-thumbs-down"></i> Unlike
+                            </button>
+                        </form>
+                        {{-- Report Dropdown --}}
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton{{ $comment->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-flag" aria-hidden="true"></i> Report
@@ -46,10 +60,11 @@
         </ul>
     </div>
 
+    {{-- Comment Form --}}
     <div class="card">
         <div class="card-block">
-            <form method="POST" action="/detail/{{ $discussion->id }}/comments">
-                {{ csrf_field() }}
+            <form method="POST" action="{{ route('discussions.comments.store', ['discussion' => $discussion->id]) }}">
+                @csrf
                 <div class="form-group">
                     <textarea name="body" placeholder="Your comment here." class="form-control"></textarea>
                 </div>

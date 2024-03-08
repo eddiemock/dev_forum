@@ -5,34 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use App\Models\Discussion;
 use Illuminate\Http\Request;
+use App\Models\Comment;
+use App\Http\Controllers\CommentsController;
 
 
 class LikeController extends Controller
 {
-    public function like(Discussion $discussion)
-    {
-        // Check if the user is authenticated
-        if (auth()->check()) {
-            $user = auth()->user();
-            Log::debug('Liker:', ['id' => $user->id]);
-            $user->likes()->attach($discussion->id);
-            return redirect()->route('dashboard')->with('success', 'Liked Successfully!');
-        } else {
-            // Redirect the user to the login page with an error message
-            return redirect()->route('login')->with('error', 'Please log in to like discussions.');
-        }
-    }
+    public function like(Request $request, $commentId)
+{
+    $comment = Comment::findOrFail($commentId);
+    $userId = auth()->id();
+    
+    // Attach the user to the comment's likers
+    // Make sure there's a relationship method `likers` in Comment model
+    $comment->likers()->attach($userId);
 
-    public function unlike(Discussion $discussion)
-    {
-        // Check if the user is authenticated
-        if (auth()->check()) {
-            $user = auth()->user();
-            $user->likes()->detach($discussion->id);
-            return redirect()->route('dashboard')->with('success', 'Unliked Successfully!');
-        } else {
-            // Redirect the user to the login page with an error message
-            return redirect()->route('login')->with('error', 'Please log in to unlike discussions.');
-        }
-    }
+    return back()->with('success', 'Comment liked successfully!');
+}
+
+    public function unlike(Request $request, $commentId)
+{
+    $user = auth()->user();
+    $comment = Comment::findOrFail($commentId);
+
+    // Detach the user from the comment's likers
+    $comment->likers()->detach($user->id);
+
+    return back()->with('success', 'Comment unliked successfully!');
+}
 }

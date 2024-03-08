@@ -43,5 +43,12 @@ class Discussion extends Model
     return $this->belongsTo(\App\Models\Category::class);
 }
 
+public function likedBy()
+{
+    // This mirrors the relationship in the User model
+    return $this->belongsToMany(User::class, 'likes', 'discussion_id', 'user_id')->withTimestamps();
+}
+
+
 }
 

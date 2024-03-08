@@ -36,5 +36,13 @@ public function comments()
     return $this->hasMany(Comment::class);
 }
 
+public function likedBy()
+{
+    // This mirrors the relationship in the User model
+    return $this->belongsToMany(User::class, 'likes', 'discussion_id', 'user_id')->withTimestamps();
+}
+
+
+
 }
 

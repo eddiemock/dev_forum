@@ -34,38 +34,34 @@ Route::get('/register',[HomeController::class,'register']);
 Route::post('/register',[HomeController::class,'register_confirm']);
 Route::post('logout', [HomeController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::middleware('web')->group(function () {
+Route::middleware('auth')->group(function () {
 Route::post('/categories/{category}/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
-Route::post('/new_discussion',[DiscussionController::class,'confirm_new_discussion']);
-Route::get('/new_discussion',[DiscussionController::class,'new_discussion']);
+Route::get('/categories/{category}/discussions/new', [DiscussionController::class, 'new_discussion'])->name('discussions.new');
+Route::get('/categories/{category}/discussions/{id}', [DiscussionController::class, 'detail'])->name('discussions.detail');
+Route::get('/categories/{category}/discussions/delete/{id}', [DiscussionController::class, 'delete'])->where('id', '^\d+$')->name('discussions.delete');
+Route::get('/categories/{category}/discussions/edit/{id}', [DiscussionController::class, 'edit_post'])->where('id', '^\d+$')->name('discussions.edit');
+Route::post('/categories/{category}/discussions/update/{id}', [DiscussionController::class, 'update_post'])->where('id', '^\d+$')->name('discussions.update');
 Route::get('/dashboard',[HomeController::class,'dashboard']);
-Route::get('/detail/{id}',[DiscussionController::class,'detail'])->where('id','^\d+$');
-Route::get('/delete/{id}',[DiscussionController::class,'delete'])->where('id','^\d+$');
-Route::get('/edit/{id}',[DiscussionController::class,'edit_post'])->where('id','^\d+$');
+Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store'])->name('discussions.comments.store');
+Route::post('/comments/{comment}/like', [LikeController::class, 'like'])->name('comment.like');
+Route::post('/comments/{comment}/unlike', [LikeController::class, 'unlike'])->name('comment.unlike');
 Route::post('/update_post',[DiscussionController::class,'update_post']);
 Route::get('logout', [HomeController::class, 'logout'])->name('logout');
-Route::post('/detail/{discussion}/comments', [CommentsController::class, 'store']);
-
-
-Route::post('/detail/{discussion}/like', [LikeController::class, 'like'])->name('discussion.like');
-Route::post('/detail/{discussion}/unlike', [LikeController::class, 'unlike'])->name('discussion.unlike');
-
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/comments', [AdminController::class, 'comments'])->name('admin.comments');
+    Route::post('/admin/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
+    Route::delete('/admin/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
+
+    // Define the route for storing categories
+    Route::post('/admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+});
+
 });
 
 
-Route::prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/comments', [AdminController::class, 'comments'])->name('admin.comments');
-    Route::post('/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
-    Route::delete('/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
-});
-
-
-Route::get('/{lang?}',function ($lang ='en'){
-    return view('/');
-});
 
 Route::get('lang/{language}',[LocalizationController::class,'index']);
 
