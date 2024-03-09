@@ -24,7 +24,17 @@
             @foreach ($discussion->comments as $comment)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                    <strong>{{ $comment->created_at->diffForHumans() }} by {{ $comment->user->name }}:</strong> {{-- Show the comment author --}}
+                    <strong>{{ $comment->created_at->diffForHumans() }} 
+
+                    by 
+                    @if($comment->user->isAdmin())
+                        <i class="fas fa-crown" title="Administrator"></i>
+                    @else
+                        <i class="fas fa-user" title="User"></i>
+                    @endif
+                    {{ $comment->user->name }}
+                  
+                    </strong> {{-- Show the comment author --}}
                         {{ $comment->body }}
                         <p>Likes: {{ $comment->likers_count }}</p>
                     </div>
