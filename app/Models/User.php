@@ -42,7 +42,25 @@ public function likedBy()
     return $this->belongsToMany(User::class, 'likes', 'discussion_id', 'user_id')->withTimestamps();
 }
 
+public function roles()
+{
+    return $this->belongsToMany(Role::class);
+}
 
 
+public function hasRole($role)
+{
+    return $this->roles()->where('name', $role)->exists();
+}
+
+public function isAdmin()
+{
+    return $this->hasRole('administrator');
+}
+
+public function isModerator()
+{
+    return $this->hasRole('moderator');
+}
 }
 

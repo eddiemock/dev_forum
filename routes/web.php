@@ -49,16 +49,19 @@ Route::post('/update_post',[DiscussionController::class,'update_post']);
 Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/comments', [AdminController::class, 'comments'])->name('admin.comments');
-    Route::post('/admin/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
-    Route::delete('/admin/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
 
-    // Define the route for storing categories
-    Route::post('/admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/comments', [AdminController::class, 'comments'])->name('admin.comments');
+    Route::post('/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
+    Route::delete('/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
 });
 
+
+Route::get('/moderate', function () {
+    
+})->middleware('checkRole:moderator,administrator');
 });
 
 
