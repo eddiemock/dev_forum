@@ -13,7 +13,7 @@ use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\CategoryController;
 Use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\ReportController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -62,6 +62,8 @@ Route::post('/update_post',[DiscussionController::class,'update_post']);
 Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 
+
+Route::post('/report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');
 
 Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');

@@ -131,13 +131,14 @@ public function detail(Category $category, $id)
 {
     // Fetch the discussion by its ID and category ID, and also load comments with the count of likers for each comment
     $discussion = Discussion::where('category_id', $category->id)
-                            ->where('id', $id)
-                            ->with(['comments' => function($query) {
-                                $query->withCount('likers');
-                            }])
-                            ->firstOrFail();
-    
-    return view('pages.discussion_detail', compact('discussion', 'category'));
+        ->where('id', $id)
+        ->with(['comments' => function ($query) {
+            $query->withCount('likers');
+        }])
+        ->firstOrFail();
+
+    $commentId = 0; // Initialize with a default value or fetch the comment ID from somewhere
+    return view('pages.discussion_detail', compact('discussion', 'category', 'commentId'));
 }
 
 
