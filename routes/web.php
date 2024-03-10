@@ -12,6 +12,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 Use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,6 +28,8 @@ Use App\Http\Controllers\HomeController;
 //     return view('welcome');
 // });
 
+Auth::routes(['verify' => true]);
+
 Route::get('/',[HomeController::class,'index']);
 Route::get('/login', [HomeController::class, 'login'])->middleware('protectedpage')->name('login');
 Route::post('/login',[HomeController::class,'confirm_login'])->name('login');
@@ -34,7 +37,8 @@ Route::get('/register',[HomeController::class,'register']);
 Route::post('/register',[HomeController::class,'register_confirm']);
 Route::post('logout', [HomeController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::middleware('auth')->group(function () {
+
+Route::middleware('auth', 'verified')->group(function () {
 Route::post('/categories/{category}/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
 Route::get('/categories/{category}/discussions/new', [DiscussionController::class, 'new_discussion'])->name('discussions.new');
 Route::get('/categories/{category}/discussions/{id}', [DiscussionController::class, 'detail'])->name('discussions.detail');
