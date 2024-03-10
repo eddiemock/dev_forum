@@ -1,4 +1,3 @@
-User
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
@@ -10,9 +9,14 @@ use App\Http\Middleware\Localization;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\CategoryController;
 Use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,6 +33,11 @@ use Illuminate\Support\Facades\Auth;
 // });
 
 Auth::routes(['verify' => true]);
+
+
+Route::get('/email/verify/{token}', [VerificationController::class, 'verify'])->name('verification.verify');
+
+
 
 Route::get('/',[HomeController::class,'index']);
 Route::get('/login', [HomeController::class, 'login'])->middleware('protectedpage')->name('login');

@@ -90,14 +90,21 @@ class HomeController extends Controller
 
     
     $user = User::create([
-    'name' => $validatedData['name'], // Change this to 'name' to match your database column
-    'email' => $validatedData['email'],
-    'password' => Hash::make($validatedData['password']), // Hash the password
-    'country' => $validatedData['country'],
-    'verification_token' => Str::random(60),
-]);
-
-    Mail::to($user->email)->send(new VerifyEmail($user));   
+        'name' => $validatedData['name'],
+        'email' => $validatedData['email'],
+        'password' => Hash::make($validatedData['password']),
+        'country' => $validatedData['country'],
+        'verification_token' => Str::random(60),
+    ]);
+    
+    try {
+        Mail::to($user->email)->send(new VerifyEmail($user));
+        Log::info('Verification email sent', ['user_id' => $user->id]);
+    } catch (\Exception $e) {
+        Log::error('Failed to send verification email', ['error' => $e->getMessage()]);
+    }
+    
+    
 
 
     // Redirect to a specific route after registration
