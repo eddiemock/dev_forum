@@ -8,14 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Discussion;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
     protected $table = 'users';
     
     protected $fillable = [
-        'name', 'email', 'password', 'country',
+        'name', 'email', 'password', 'country', 'verification_token',
     ];
     
 
@@ -42,7 +42,25 @@ public function likedBy()
     return $this->belongsToMany(User::class, 'likes', 'discussion_id', 'user_id')->withTimestamps();
 }
 
+public function roles()
+{
+    return $this->belongsToMany(Role::class);
+}
 
 
+public function hasRole($role)
+{
+    return $this->roles()->where('name', $role)->exists();
+}
+
+public function isAdmin()
+{
+    return $this->hasRole('administrator');
+}
+
+public function isModerator()
+{
+    return $this->hasRole('moderator');
+}
 }
 

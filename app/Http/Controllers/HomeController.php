@@ -8,6 +8,11 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Discussion;
+use Illuminate\Support\Str;
+use App\Mail\VerifyEmail;
+use Illuminate\Support\Facades\Mail;
+
+
 class HomeController extends Controller
 {
     public function index()
@@ -23,33 +28,49 @@ class HomeController extends Controller
     }
 
     public function confirm_login(Request $request)
-{
-    // Log that we've entered the method
-    Log::info('Attempting to login', ['email' => $request->email]);
-
-    // Prepare credentials
-    $credentials = $request->only('email', 'password');
+    {
+        // Log that we've entered the method
+        Log::info('Attempting to login', ['email' => $request->email]);
     
-    // Attempt to authenticate
-    if (Auth::attempt($credentials)) {
-        // Log successful authentication
-        Log::info('Authentication successful', ['email' => $request->email]);
-
-        // Regenerate the session to protect against session fixation attacks
-        $request->session()->regenerate();
-
-        // Redirect to intended page or default to dashboard
-        return redirect()->intended('/');
+        // Prepare credentials
+        $credentials = $request->only('email', 'password');
+    
+        // Attempt to authenticate without directly logging in
+        if (Auth::validate($credentials)) {
+            $user = Auth::getLastAttempted();
+    
+            // Check if the user's email is verified
+            if ($user->email_verified_at !== null) {
+                // Log successful authentication
+                Log::info('Authentication successful', ['email' => $request->email]);
+    
+                // Manually log in the user
+                Auth::login($user, $request->filled('remember'));
+    
+                // Regenerate the session to protect against session fixation attacks
+                $request->session()->regenerate();
+    
+                // Redirect to intended page or default to dashboard
+                return redirect()->intended('/');
+            } else {
+                // Log failed authentication attempt due to unverified email
+                Log::warning('Authentication failed - email not verified', ['email' => $request->email]);
+    
+                // Redirect back with error
+                return back()->withErrors([
+                    'email' => 'You need to verify your email address before you can log in.',
+                ]);
+            }
+        }
+    
+        // Log failed authentication attempt
+        Log::warning('Authentication failed', ['email' => $request->email]);
+    
+        // Redirect back with error
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
-
-    // Log failed authentication attempt
-    Log::warning('Authentication failed', ['email' => $request->email]);
-
-    // Redirect back with error
-    return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ]);
-}
 
     public function register()
     {
@@ -69,18 +90,25 @@ class HomeController extends Controller
 
     
     $user = User::create([
-    'name' => $validatedData['name'], // Change this to 'name' to match your database column
-    'email' => $validatedData['email'],
-    'password' => Hash::make($validatedData['password']), // Hash the password
-    'country' => $validatedData['country'],
-]);
+        'name' => $validatedData['name'],
+        'email' => $validatedData['email'],
+        'password' => Hash::make($validatedData['password']),
+        'country' => $validatedData['country'],
+        'verification_token' => Str::random(60),
+    ]);
+    
+    try {
+        Mail::to($user->email)->send(new VerifyEmail($user));
+        Log::info('Verification email sent', ['user_id' => $user->id]);
+    } catch (\Exception $e) {
+        Log::error('Failed to send verification email', ['error' => $e->getMessage()]);
+    }
+    
+    
 
-
-    // Optionally log the user in
-    Auth::login($user);
 
     // Redirect to a specific route after registration
-    return redirect()->route('index'); // Make sure 'index' is a defined route in your web.php
+    return redirect('/');
 }
 
     public function logout(Request $request)

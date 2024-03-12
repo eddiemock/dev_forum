@@ -1,4 +1,3 @@
-User
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
@@ -10,8 +9,14 @@ use App\Http\Middleware\Localization;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\CategoryController;
 Use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ReportController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,6 +32,13 @@ Use App\Http\Controllers\HomeController;
 //     return view('welcome');
 // });
 
+Auth::routes(['verify' => true]);
+
+
+Route::get('/email/verify/{token}', [VerificationController::class, 'verify'])->name('verification.verify');
+
+
+
 Route::get('/',[HomeController::class,'index']);
 Route::get('/login', [HomeController::class, 'login'])->middleware('protectedpage')->name('login');
 Route::post('/login',[HomeController::class,'confirm_login'])->name('login');
@@ -34,7 +46,8 @@ Route::get('/register',[HomeController::class,'register']);
 Route::post('/register',[HomeController::class,'register_confirm']);
 Route::post('logout', [HomeController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::middleware('auth')->group(function () {
+
+Route::middleware('auth', 'verified')->group(function () {
 Route::post('/categories/{category}/discussions', [DiscussionController::class, 'store'])->name('discussions.store');
 Route::get('/categories/{category}/discussions/new', [DiscussionController::class, 'new_discussion'])->name('discussions.new');
 Route::get('/categories/{category}/discussions/{id}', [DiscussionController::class, 'detail'])->name('discussions.detail');
@@ -49,16 +62,21 @@ Route::post('/update_post',[DiscussionController::class,'update_post']);
 Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/comments', [AdminController::class, 'comments'])->name('admin.comments');
-    Route::post('/admin/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
-    Route::delete('/admin/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
 
-    // Define the route for storing categories
-    Route::post('/admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+Route::post('/report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');
+
+Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/comments', [AdminController::class, 'comments'])->name('admin.comments');
+    Route::post('/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
+    Route::delete('/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
 });
 
+
+Route::get('/moderate', function () {
+    
+})->middleware('checkRole:moderator,administrator');
 });
 
 

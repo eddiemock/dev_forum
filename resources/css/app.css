@@ -1,0 +1,7 @@
+.toggle-comments-checkbox {
+    display: none;
+}
+
+.toggle-comments-checkbox:checked + .toggle-comments-label + .toggle-comments {
+    display: block;
+}

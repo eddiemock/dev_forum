@@ -3,17 +3,27 @@
 namespace App\Http\Controllers;
 use App\Models\Discussion;
 use App\Models\Comment;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+
+    
     public function dashboard()
-    {
-        $discussions = Discussion::all();
-        $unapprovedComments = Comment::where('is_approved', 0)->get();
-        return view('admin.dashboard', compact('discussions', 'unapprovedComments'));
-    }
+{
+    $unapprovedComments = Comment::where('is_approved', false)
+        ->join('users', 'comments.user_id', '=', 'users.id')
+        ->select('comments.*', 'users.name as user_name')
+        ->get();
+
+    $discussions = Discussion::all();
+
+    $categories = Category::all(); // Fetch all categories
+
+    return view('admin.dashboard', compact('discussions', 'unapprovedComments', 'categories'));
+}
 
     public function comments()
     {

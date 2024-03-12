@@ -11,6 +11,7 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <p>{{ $comment->body }}</p>
+                        <p>Flagged by: {{ $comment->user_name }}</p>
                         <form method="POST" action="{{ route('admin.comment.approve', $comment->id) }}">
                             @csrf
                             <button type="submit" class="btn btn-success">Approve</button>
@@ -31,8 +32,11 @@
                     <div class="card-header">
                         <h5 class="mb-0">{{ $discussion->post_title }}</h5>
                         <small>Written by: {{ $discussion->user->name }}</small>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#comments{{ $discussion->id }}" aria-expanded="false" aria-controls="comments{{ $discussion->id }}">
+                            Toggle Comments
+                        </button>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body collapse" id="comments{{ $discussion->id }}">
                         <p class="card-text">{{ $discussion->description }}</p>
                         <h6>Comments:</h6>
                         <ul class="list-group">
@@ -77,4 +81,5 @@
         </form>
     </div>
 </div>
+
 @endsection

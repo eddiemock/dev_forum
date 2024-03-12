@@ -2,18 +2,28 @@
 
 @section('content')
 <div class="container">
-    <h1>Dashboard</h1>
-    <h2>Categories</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">Dashboard</h1>
+                </div>
 
-    @forelse ($categories as $category)
-        <div>
-            <h3>{{ $category->name }}</h3>
-            {{-- Assuming you have a route named 'categories.show' that expects a category's ID --}}
-            <a href="{{ route('categories.show', $category->id) }}">View Category</a>
+                <div class="card-body">
+                    <h2 class="mb-4">Categories</h2>
+
+                    @forelse ($categories as $category)
+                        <div class="category">
+                            <h3>{{ $category->name }}</h3>
+                            <a href="{{ route('categories.show', $category->id) }}" class="btn btn-primary">View Category</a>
+                        </div>
+                        <hr class="mt-3 mb-3">
+                    @empty
+                        <p>No categories available.</p>
+                    @endforelse
+                </div>
+            </div>
         </div>
-        <hr>
-    @empty
-        <p>No categories available.</p>
-    @endforelse
+    </div>
 </div>
 @endsection
