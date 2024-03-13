@@ -10,35 +10,38 @@ use Illuminate\Support\Facades\Log;
 class ReportController extends Controller
 {
     public function reportComment(Request $request, $commentId)
-    {
-        try {
-            // Find the comment by its ID
-            $comment = Comment::findOrFail($commentId);
+{
+    Log::info("Received report for comment ID: {$commentId}");
+    
+    try {
+        // Find the comment by its ID
+        $comment = Comment::findOrFail($commentId);
 
-            // Log the found comment
-            Log::info('Comment found:', ['comment' => $comment]);
+        // Log the found comment
+        Log::info('Comment found:', ['comment' => $comment]);
 
-            // Validate the request data
-            $request->validate([
-                'reason' => 'required|string|max:255',
-            ]);
+        // Validate the request data
+        $request->validate([
+            'reason' => 'required|string|max:255',
+        ]);
 
-            // Create a new report
-            Report::create([
-                'user_id' => auth()->id(),
-                'reason' => $request->reason,
-                'reportable_id' => $comment->id,
-                'reportable_type' => get_class($comment),
-            ]);
+        // Create a new report
+        Report::create([
+            'user_id' => auth()->id(),
+            'reason' => $request->reason,
+            'reportable_id' => $comment->id,
+            'reportable_type' => get_class($comment),
+        ]);
 
-            // Redirect back with success message
-            return back()->with('success', 'Report submitted successfully.');
-        } catch (\Exception $e) {
-            // Log the error
-            Log::error('Error reporting comment:', ['exception' => $e]);
+        // Redirect back with success message
+        return back()->with('success', 'Report submitted successfully.');
+    } catch (\Exception $e) {
+        // Log the error
+        Log::error('Error reporting comment:', ['exception' => $e->getMessage()]);
 
-            // Redirect back with error message
-            return back()->with('error', 'An error occurred while reporting the comment.');
-        }
+        // Redirect back with error message
+        return back()->with('error', 'An error occurred while reporting the comment.');
     }
+}
+
 }

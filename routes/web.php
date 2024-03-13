@@ -65,6 +65,7 @@ Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categ
 
 Route::post('/report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');
 
+
 Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/comments', [AdminController::class, 'comments'])->name('admin.comments');
