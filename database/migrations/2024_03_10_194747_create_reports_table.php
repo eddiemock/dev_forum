@@ -11,19 +11,19 @@ class CreateReportsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('reports', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->text('reason');
-            $table->morphs('reportable'); // Polymorphic relation to allow reporting different models (e.g., posts, comments)
-            $table->timestamps();
-        
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
-        
-    }
+    //public function up()
+    //{
+      //Schema::create('reports', function (Blueprint $table) {
+       //     $table->id();
+   //         $table->unsignedBigInteger('user_id');
+   //         $table->text('reason');
+    //        $table->morphs('reportable'); // Polymorphic relation to allow reporting different models (e.g., posts, comments)
+   //         $table->timestamps();
+   //     
+   //         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+   //     });
+    //    
+   // }
 
     /**
      * Reverse the migrations.

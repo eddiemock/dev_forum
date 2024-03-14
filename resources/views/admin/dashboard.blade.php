@@ -6,8 +6,8 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h2>Unapproved Comments</h2>
-            @foreach($unapprovedComments as $comment)
+            <h2>Flagged Comments</h2>
+            @foreach($flaggedComments as $comment)
                 <div class="card mb-3">
                     <div class="card-body">
                         <p>{{ $comment->body }}</p>

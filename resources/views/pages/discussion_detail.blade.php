@@ -96,9 +96,8 @@
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-                <form method="POST" id="reportForm" action="{{ route('report.comment', ['comment' => $comment->id]) }}">
-                            @csrf
-                 <input type="hidden" name="comment_id" value="{{ $comment->id }}">
+        <form method="POST" id="reportForm" action="{{ route('report.comment', ['comment' => $commentId]) }}"> 
+                <input type="hidden" name="comment_id" value="{{ $comment->id }}">
                 <div class="modal-header">
                     <h5 class="modal-title" id="reportModalLabel">Report Comment</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

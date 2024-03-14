@@ -23,7 +23,7 @@ class Discussion extends Model
     public function comments()
     {
 
-         return $this->hasMany(Comment::class)->where('is_approved', true);       
+         return $this->hasMany(Comment::class)->where('flagged', false);       
 
     }
 
@@ -49,6 +49,9 @@ public function likedBy()
     return $this->belongsToMany(User::class, 'likes', 'discussion_id', 'user_id')->withTimestamps();
 }
 
-
+public function approvedComments()
+{
+    return $this->hasMany(Comment::class)->where('is_approved', true);
+}
 }
 

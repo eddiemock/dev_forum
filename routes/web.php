@@ -63,7 +63,8 @@ Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 
 
-Route::post('/report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');
+Route::post('report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');
+
 
 
 Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function () {

@@ -12,18 +12,20 @@ class AdminController extends Controller
 
     
     public function dashboard()
-{
-    $unapprovedComments = Comment::where('is_approved', false)
-        ->join('users', 'comments.user_id', '=', 'users.id')
-        ->select('comments.*', 'users.name as user_name')
-        ->get();
+    {
+        // Change the query to select flagged comments
+        $flaggedComments = Comment::where('flagged', true)
+            ->join('users', 'comments.user_id', '=', 'users.id')
+            ->select('comments.*', 'users.name as user_name')
+            ->get();
 
-    $discussions = Discussion::all();
+        $discussions = Discussion::all();
 
-    $categories = Category::all(); // Fetch all categories
+        $categories = Category::all(); // Fetch all categories
 
-    return view('admin.dashboard', compact('discussions', 'unapprovedComments', 'categories'));
-}
+        // Pass the flagged comments to the view instead of unapproved comments
+        return view('admin.dashboard', compact('discussions', 'flaggedComments', 'categories'));
+    }
 
     public function comments()
     {

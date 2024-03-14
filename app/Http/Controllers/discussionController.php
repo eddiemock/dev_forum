@@ -129,13 +129,17 @@ public function addTagToDiscussion(Request $request, Discussion $discussion)
 
 public function detail(Category $category, $id)
 {
-    // Fetch the discussion by its ID and category ID, and also load comments with the count of likers for each comment
+    // Fetch the discussion by its ID and category ID, and also load comments
+    // Adjust the query to reflect the change from 'is_approved' to 'flagged'
     $discussion = Discussion::where('category_id', $category->id)
-        ->where('id', $id)
-        ->with(['comments' => function ($query) {
-            $query->withCount('likers');
-        }])
-        ->firstOrFail();
+    ->where('id', $id)
+    ->with(['comments' => function ($query) {
+        // Assuming 'flagged' is true for comments needing review, adjust accordingly
+        // If 'flagged' means something needs review, you'd likely want where('flagged', false)
+        $query->where('flagged', false) // Adjusted to use 'flagged' column
+              ->withCount('likers');
+    }])
+    ->firstOrFail();
 
     $commentId = 0; // Initialize with a default value or fetch the comment ID from somewhere
     return view('pages.discussion_detail', compact('discussion', 'category', 'commentId'));

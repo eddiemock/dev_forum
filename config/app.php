@@ -161,7 +161,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        App\Providers\IBMWatsonServiceProvider::class,
+        App\Providers\ModerationServiceProvider::class,
         /*
          * Package Service Providers...
          */
