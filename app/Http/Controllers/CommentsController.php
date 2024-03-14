@@ -5,8 +5,9 @@ use App\Services\OpenAiModerationService;
 use App\Models\Discussion;
 use Illuminate\Http\Request;
 use App\Models\Comment;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CommentFlaggedMail;
 
 class CommentsController extends Controller
 {
@@ -25,23 +26,22 @@ class CommentsController extends Controller
 
         $userId = Auth::id();
         $commentText = $request->input('body');
-
-        // Moderates the text and checks if it needs to be flagged.
         $needsReview = $this->needsReview($commentText);
 
         $comment = new Comment();
         $comment->body = $commentText;
         $comment->discussion_id = $discussion->id;
         $comment->user_id = $userId;
-        $comment->flagged = $needsReview ? 1 : 0; // If needsReview is true, set flagged to 1, else 0.
-
+        $comment->flagged = $needsReview ? 1 : 0;
         $comment->save();
 
+        // If the comment is flagged, notify admins
         if ($needsReview) {
-            // Inform the user their comment is under review if it's flagged.
+            // Send an email about the flagged comment
+            Mail::to('admin@example.com')->send(new CommentFlaggedMail($comment)); // Use a generic admin email or a real one for testing
+        
             return back()->withErrors(['message' => 'Your comment is under review.']);
         } else {
-            // Confirm comment posting success.
             return back()->with('message', 'Your comment has been posted successfully.');
         }
     }
@@ -49,7 +49,6 @@ class CommentsController extends Controller
     private function needsReview($text)
     {
         $moderationResult = $this->moderationService->moderateText($text);
-        // Assumes the moderation result has a 'flagged' key that's true if the comment needs review.
         return !empty($moderationResult['flagged']);
     }
 }
