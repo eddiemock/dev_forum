@@ -29,27 +29,28 @@ class OpenAiModerationService
         ]);
 
         $data = json_decode($response->getBody()->getContents(), true);
-        Log::info('Moderation response:', $data);
 
-        // Default to not flagged
-        $flagged = false;
+        $flaggedCategories = [];
 
-        // Check if there's at least one result and if it's flagged
+        // Assuming each result could contain multiple categories
         if (!empty($data['results']) && is_array($data['results'])) {
             foreach ($data['results'] as $result) {
                 if (!empty($result['flagged'])) {
-                    $flagged = true;
-                    break; // Stop checking if any result is flagged
+                    foreach ($result['categories'] as $category => $value) {
+                        if ($value === true) {
+                            // Add the category to the list if it's flagged
+                            $flaggedCategories[$category] = $value;
+                        }
+                    }
                 }
             }
         }
 
-        return ['flagged' => $flagged];
+        return ['flagged' => !empty($flaggedCategories), 'categories' => $flaggedCategories];
     } catch (\Exception $e) {
         Log::error('Failed to moderate comment:', ['exception' => $e->getMessage()]);
-        return ['flagged' => false]; // Assume not flagged if there's an error, or handle as needed
+        return ['flagged' => false, 'categories' => []];
     }
 }
-
 
 }

@@ -9,20 +9,22 @@ use App\Models\Comment;
 
 class CommentFlaggedMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    protected $comment;
+    protected $categories;
 
-    public $comment;
+public function __construct(Comment $comment, array $categories)
+{
+    $this->comment = $comment;
+    $this->categories = $categories;
+}
 
-    public function __construct(Comment $comment)
-    {
-        $this->comment = $comment;
-    }
+public function build()
+{
+    return $this->view('emails.commentFlagged')
+                ->with([
+                    'commentText' => $this->comment->body,
+                    'categories' => $this->categories,
+                ]);
+}
 
-    public function build()
-    {
-        return $this->view('emails.commentFlagged')
-                    ->with([
-                        'commentBody' => $this->comment->body,
-                    ]);
-    }
 }

@@ -36,13 +36,27 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>A Comment Has Been Flagged</h1>
-        <p>The following comment has been flagged for review:</p>
-        <p><em>"{{ $commentBody }}"</em></p>
-        <div class="footer">
-            This is an automated message from <strong>Uni Talk</strong>. If you have any questions, feel free to contact us.
-        </div>
+<div class="container">
+    <h1>A Comment Has Been Flagged</h1>
+    <p>The following comment has been flagged for review:</p>
+    <p><em>"{{ $commentText }}"</em></p>
+
+    <!-- Check if there are any flagged categories and display them -->
+    @if(!empty($categories) && is_array($categories))
+        <p>The comment has been flagged for the following reasons:</p>
+        <ul>
+            @foreach($categories as $category => $value)
+                <li>{{ ucfirst(str_replace('_', ' ', $category)) }}</li>
+            @endforeach
+        </ul>
+    @else
+        <p>The comment has been flagged for review.</p>
+    @endif
+
+    <div class="footer">
+        This is an automated message from <strong>Uni Talk</strong>. If you have any questions, feel free to contact us.
     </div>
+</div>
+
 </body>
 </html>
