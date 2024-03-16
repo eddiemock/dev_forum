@@ -46,7 +46,23 @@
             @endforeach
         </div>
     </div>
-
+    <div class="row mt-4">
+        <div class="col-md-12"> <!-- Full width for email section -->
+            <h2>Send Mental Health Support Email</h2>
+            <form method="POST" action="{{ route('admin.sendSupportEmail') }}" class="mb-3">
+                @csrf
+                <div class="form-group">
+                    <label for="userSelect">Select User:</label>
+                    <select id="userSelect" name="user_id" class="form-control">
+                        @foreach($users as $user) <!-- Assuming $users is passed to the view -->
+                            <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-warning">Send Support Email</button>
+            </form>
+        </div>
+    </div>
     <!-- Assuming this is another row or part of the dashboard -->
     <div class="row mt-4">
         <div class="col-md-6"> <!-- Adjusted for narrower form -->

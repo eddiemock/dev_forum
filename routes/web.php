@@ -14,6 +14,7 @@ use App\Http\Controllers\CategoryController;
 Use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ResourceController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -37,7 +38,7 @@ Auth::routes(['verify' => true]);
 
 Route::get('/email/verify/{token}', [VerificationController::class, 'verify'])->name('verification.verify');
 
-
+Route::get('/resources', [ResourceController::class, 'index'])->name('resources.index');
 
 Route::get('/',[HomeController::class,'index']);
 Route::get('/login', [HomeController::class, 'login'])->middleware('protectedpage')->name('login');
@@ -73,6 +74,7 @@ Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function 
     Route::post('/comment/approve/{id}', [AdminController::class, 'approveComment'])->name('admin.comment.approve');
     Route::delete('/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
     Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::post('/admin/send-support-email', [AdminController::class, 'sendSupportEmail'])->name('admin.sendSupportEmail');
 });
 
 

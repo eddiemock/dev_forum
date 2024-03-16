@@ -62,6 +62,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">{{ __('Home') }}</a>
                 </li>
+                <!-- Inserted Resources Link -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/resources">{{ __('Resources') }}</a>
+                </li>
+                <!-- End Inserted Resources Link -->
                 @auth
                     <li class="nav-item">
                         <a class="nav-link" href="#">Profile</a>
@@ -93,6 +98,7 @@
         </div>
     </div>
 </nav>
+
 
 <div class="container mt-4">
     @include('layouts.flash')
