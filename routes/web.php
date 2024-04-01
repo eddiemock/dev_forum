@@ -1,11 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DiscussionController;
-use App\Http\Controllers\SiteController;
 use App\Http\Controllers\LocalizationController;
-use App\Http\Middleware\Localization;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\AdminController;
@@ -15,9 +12,7 @@ Use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -62,6 +57,8 @@ Route::post('/comments/{comment}/unlike', [LikeController::class, 'unlike'])->na
 Route::post('/update_post',[DiscussionController::class,'update_post']);
 Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/user/{id}/profile', [ProfileController::class, 'showProfile'])->name('pages.profile');
+Route::get('/admin/user/{userId}/comments', [AdminController::class, 'getUserComments'])->name('admin.user.comments');
 
 
 Route::post('report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');

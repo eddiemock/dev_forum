@@ -14,20 +14,15 @@ class AdminController extends Controller
 
     
     public function dashboard()
-    {
-        // Fetch flagged comments with the name of the user who posted each comment
-        $flaggedComments = Comment::where('flagged', true)
-                            ->join('users', 'comments.user_id', '=', 'users.id')
-                            ->select('comments.*', 'users.name as user_name')
-                            ->get();
-    
-        $discussions = Discussion::all(); // Fetch all discussions
-        $categories = Category::all(); // Fetch all categories
-        $users = User::all(); // Fetch all users for the email sending section
-    
-        // Pass all the fetched data to the view
-        return view('admin.dashboard', compact('discussions', 'flaggedComments', 'categories', 'users'));
-    }
+{
+    $usersWithFlaggedComments = User::with(['comments' => function ($query) {
+        $query->where('flagged', true);
+    }])->get();
+
+    $users = User::all(); // Ensure this line is correctly added
+
+    return view('admin.dashboard', compact('usersWithFlaggedComments', 'users'));
+}
 
     public function comments()
     {
@@ -60,4 +55,13 @@ class AdminController extends Controller
 
     return back()->with('success', 'Support email sent successfully to ' . $user->email);
 }
+
+public function getUserComments($userId)
+{
+    $user = User::findOrFail($userId);
+    $comments = $user->comments;
+    return view('admin.user_comments', compact('comments'));
+}
+
+
 }
