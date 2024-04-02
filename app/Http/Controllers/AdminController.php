@@ -15,14 +15,25 @@ class AdminController extends Controller
     
     public function dashboard()
 {
-    $usersWithFlaggedComments = User::with(['comments' => function ($query) {
-        $query->where('flagged', true);
+    $usersWithFlaggedComments = User::whereHas('comments', function ($query) {
+        // The comment is either flagged or has depressive_classification = 1
+        $query->where('flagged', '=', true)
+              ->orWhere('depressive_classification', '=', 1);
+    })->with(['comments' => function ($query) {
+        // Apply the same conditions for the eager-loaded comments
+        $query->where(function ($query) {
+            $query->where('flagged', '=', true)
+                  ->orWhere('depressive_classification', '=', 1);
+        });
     }])->get();
 
-    $users = User::all(); // Ensure this line is correctly added
+    // This retrieves all users, which might be used for other purposes in the dashboard
+    $users = User::all();
 
     return view('admin.dashboard', compact('usersWithFlaggedComments', 'users'));
 }
+
+    
 
     public function comments()
     {

@@ -3,6 +3,27 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
+        <!-- Scheduled Support Groups Section -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">Scheduled Support Groups</div>
+                <div class="card-body">
+                    @forelse ($supportGroups as $group)
+                        <div class="support-group">
+                            <h3>{{ $group->name }}</h3>
+                            <p>Topic: {{ $group->topic }}</p>
+                            <small>Scheduled for: {{ $group->scheduled_at }}</small>
+                            <a href="#" class="btn btn-secondary btn-sm mt-2">View Group</a>
+                        </div>
+                        <hr>
+                    @empty
+                        <p>No scheduled support groups.</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Section -->
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">

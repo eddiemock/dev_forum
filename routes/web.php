@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupportGroupController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -72,6 +73,7 @@ Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function 
     Route::delete('/comment/delete/{id}', [AdminController::class, 'deleteComment'])->name('admin.comment.delete');
     Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
     Route::post('/admin/send-support-email', [AdminController::class, 'sendSupportEmail'])->name('admin.sendSupportEmail');
+    Route::resource('support_groups', SupportGroupController::class);
 });
 
 

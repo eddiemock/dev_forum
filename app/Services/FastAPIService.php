@@ -12,7 +12,7 @@ class FastAPIService
 
     public function __construct()
     {
-        $this->baseUrl = 'https://starfish-app-2y83q.ondigitalocean.app';
+        $this->baseUrl = 'http://178.62.9.51';
         $this->apiKey = env('DIGITALOCEAN_API_KEY');
     }
 

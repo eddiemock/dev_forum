@@ -11,15 +11,18 @@ use App\Models\Discussion;
 use Illuminate\Support\Str;
 use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Models\SupportGroup;
 
 
 class HomeController extends Controller
 {
     public function index()
-    {
-        $categories = Category::all(); // Fetch all categories from the database
-        return view('pages.index', compact('categories')); // Pass categories to the view
-    }
+{
+    $categories = Category::all(); // Existing code
+    $supportGroups = SupportGroup::orderBy('scheduled_at', 'desc')->get(); // Fetch support groups
+
+    return view('pages.index', compact('categories', 'supportGroups'));
+}
 
     public function login()
     {

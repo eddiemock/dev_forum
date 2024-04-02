@@ -12,7 +12,7 @@ class Comment extends Model
     protected $casts = [
         'flagged_categories' => 'array',
     ];
-    protected $fillable = ['body', 'discussion_id','user_id','is_approved']; 
+    protected $fillable = ['body', 'discussion_id', 'user_id', 'is_approved', 'depressive_classification'];
     public function post()
     {
 
