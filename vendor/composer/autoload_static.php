@@ -570,6 +570,7 @@ class ComposerStaticInit7759431e303e2d722a264a8a991a9e84
         'App\\Models\\Discussion' => __DIR__ . '/../..' . '/app/Models/Discussion.php',
         'App\\Models\\Report' => __DIR__ . '/../..' . '/app/Models/Report.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\SupportGroup' => __DIR__ . '/../..' . '/app/Models/SupportGroup.php',
         'App\\Models\\Tag' => __DIR__ . '/../..' . '/app/Models/Tag.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',

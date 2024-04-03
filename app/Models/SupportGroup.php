@@ -12,13 +12,16 @@ class SupportGroup extends Model
     protected $table = 'support_groups'; // Explicitly define the table if not following Laravel's naming conventions
 
     protected $fillable = [
-        'name',
-        'topic',
-        'scheduled_at',
-        'description',
+        'name', 'topic', 'scheduled_at', 'description', 'location', // Add 'location'
     ];
 
     protected $casts = [
         'scheduled_at' => 'datetime', // Ensure Laravel casts this field to a Carbon instance
     ];
+
+
+    public function users()
+{
+    return $this->belongsToMany(User::class)->withTimestamps();
+}
 }

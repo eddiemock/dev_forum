@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MentalHealthSupportMail;
+use App\Models\Role;
 
 class AdminController extends Controller
 {
@@ -29,8 +30,9 @@ class AdminController extends Controller
 
     // This retrieves all users, which might be used for other purposes in the dashboard
     $users = User::all();
+    $roles = Role::all();
 
-    return view('admin.dashboard', compact('usersWithFlaggedComments', 'users'));
+    return view('admin.dashboard', compact('usersWithFlaggedComments', 'users', 'roles'));
 }
 
     
@@ -74,5 +76,32 @@ public function getUserComments($userId)
     return view('admin.user_comments', compact('comments'));
 }
 
+public function showAssignRoleForm()
+    {
+        $users = User::all();
+        $roles = Role::all();
+        return view('admin.assign-role', compact('users', 'roles'));
+    }
 
+    // Method to handle the role assignment
+    public function assignRole(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'role_id' => 'required|exists:roles,id',
+    ]);
+
+    $user = User::find($request->user_id);
+
+    // Check if the user already has the selected role
+    if ($user->role_id != $request->role_id) {
+        $user->role_id = $request->role_id; // Assuming a user can have only one role
+        $user->save();
+        return redirect()->route('admin.dashboard')->with('success', 'Role assigned successfully.');
+    } else {
+        return redirect()->back()->with('error', 'User already has the selected role.');
+    }
 }
+}
+
+

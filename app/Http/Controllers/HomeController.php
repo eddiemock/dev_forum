@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\SupportGroup;
+use App\Models\Role;
 
 
 class HomeController extends Controller
@@ -100,6 +101,14 @@ class HomeController extends Controller
         'verification_token' => Str::random(60),
     ]);
     
+
+    // Assign the 'user' role to the new user
+    $userRole = Role::where('name', 'user')->first();
+    if ($userRole) {
+        $user->role()->associate($userRole);
+        $user->save();
+    }
+
     try {
         Mail::to($user->email)->send(new VerifyEmail($user));
         Log::info('Verification email sent', ['user_id' => $user->id]);

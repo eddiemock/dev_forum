@@ -36,6 +36,14 @@ Route::get('/email/verify/{token}', [VerificationController::class, 'verify'])->
 
 Route::get('/resources', [ResourceController::class, 'index'])->name('resources.index');
 
+Route::get('password/reset', 'App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'App\Http\Controllers\Auth\ResetPasswordController@reset')->name('password.update');
+
+
+
+
 Route::get('/',[HomeController::class,'index']);
 Route::get('/login', [HomeController::class, 'login'])->middleware('protectedpage')->name('login');
 Route::post('/login',[HomeController::class,'confirm_login'])->name('login');
@@ -60,8 +68,8 @@ Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/user/{id}/profile', [ProfileController::class, 'showProfile'])->name('pages.profile');
 Route::get('/admin/user/{userId}/comments', [AdminController::class, 'getUserComments'])->name('admin.user.comments');
-
-
+Route::post('/support_groups/{groupId}/register', [SupportGroupController::class, 'register'])->name('support_groups.register');
+Route::delete('/support_groups/{groupId}/leave', [SupportGroupController::class, 'leave'])->name('support_groups.leave');
 Route::post('report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');
 
 
@@ -74,6 +82,9 @@ Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function 
     Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
     Route::post('/admin/send-support-email', [AdminController::class, 'sendSupportEmail'])->name('admin.sendSupportEmail');
     Route::resource('support_groups', SupportGroupController::class);
+    Route::post('/users/{user}/assignRole', [AdminController::class, 'assignRole'])->name('users.assignRole');
+    Route::get('/admin/users/assign-role', [App\Http\Controllers\AdminController::class, 'showAssignRoleForm'])->name('admin.users.assign-role');
+    Route::post('/admin/users/assign-role', [App\Http\Controllers\AdminController::class, 'assignRole'])->name('admin.users.assign-role.post');
 });
 
 

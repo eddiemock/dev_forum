@@ -93,5 +93,23 @@
         <p>No comments posted yet.</p>
     @endforelse
 </div>
+<div class="container">
+    <h2>My Support Groups</h2>
+    @forelse ($user->supportGroups as $group)
+        <div class="discussion">
+            <h4>{{ $group->name }}</h4>
+            <p>Topic: {{ $group->topic }}</p>
+            <p>Scheduled for: {{ $group->scheduled_at->format('m/d/Y g:i A') }}</p>
+            <!-- Leave Group Form -->
+            <form action="{{ route('support_groups.leave', $group->id) }}" method="POST">
+                @csrf
+                @method('DELETE') <!-- Assuming a DELETE request is appropriate for leaving a group -->
+                <button type="submit" class="btn btn-danger btn-sm">Leave Group</button>
+            </form>
+        </div>
+    @empty
+        <p class="no-content">You haven't joined any support groups yet.</p>
+    @endforelse
+</div>
 @endsection
 

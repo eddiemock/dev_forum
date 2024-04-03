@@ -62,5 +62,9 @@ public function isModerator()
     return $this->hasRole('moderator');
 }
 
+public function supportGroups()
+{
+    return $this->belongsToMany(SupportGroup::class)->withTimestamps();
+}
 }
 
