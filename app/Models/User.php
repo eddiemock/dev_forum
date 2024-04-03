@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Discussion;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -54,11 +55,13 @@ public function hasRole($roleName)
 
 public function isAdmin()
 {
+    Log::info('isAdmin called for user: ' . $this->id . ' with role: ' . $this->role->name);
     return $this->hasRole('administrator');
 }
 
 public function isModerator()
 {
+    Log::info('isModerator called for user: ' . $this->id . ' with role: ' . $this->role->name);
     return $this->hasRole('moderator');
 }
 

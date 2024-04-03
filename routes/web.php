@@ -70,7 +70,7 @@ Route::get('/user/{id}/profile', [ProfileController::class, 'showProfile'])->nam
 Route::get('/admin/user/{userId}/comments', [AdminController::class, 'getUserComments'])->name('admin.user.comments');
 Route::post('/support_groups/{groupId}/register', [SupportGroupController::class, 'register'])->name('support_groups.register');
 Route::delete('/support_groups/{groupId}/leave', [SupportGroupController::class, 'leave'])->name('support_groups.leave');
-Route::post('report/comment/{comment}', [ReportController::class, 'reportComment'])->name('report.comment');
+
 
 
 
@@ -85,6 +85,7 @@ Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function 
     Route::post('/users/{user}/assignRole', [AdminController::class, 'assignRole'])->name('users.assignRole');
     Route::get('/admin/users/assign-role', [App\Http\Controllers\AdminController::class, 'showAssignRoleForm'])->name('admin.users.assign-role');
     Route::post('/admin/users/assign-role', [App\Http\Controllers\AdminController::class, 'assignRole'])->name('admin.users.assign-role.post');
+    Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
 });
 
 

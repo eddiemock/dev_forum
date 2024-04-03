@@ -11,26 +11,33 @@ use App\Http\Controllers\CommentsController;
 
 class LikeController extends Controller
 {
-    public function like(Request $request, $commentId)
+    public function like($commentId)
 {
     $comment = Comment::findOrFail($commentId);
     $userId = auth()->id();
-    
-    // Attach the user to the comment's likers
-    // Make sure there's a relationship method `likers` in Comment model
-    $comment->likers()->attach($userId);
 
-    return back()->with('success', 'Comment liked successfully!');
+    // Check if the user has already liked the comment
+    if ($comment->likers()->where('user_id', $userId)->exists()) {
+        // User has already liked the comment
+        return back()->with('info', 'You have already liked this comment.');
+    }
+
+    // If not already liked, proceed to like the comment
+    $comment->likers()->syncWithoutDetaching($userId);
+
+    return back();
 }
 
-    public function unlike(Request $request, $commentId)
+
+    public function unlike($commentId)
 {
-    $user = auth()->user();
+    $userId = auth()->id(); // Or use $user = auth()->user(); then $user->id;
     $comment = Comment::findOrFail($commentId);
 
     // Detach the user from the comment's likers
-    $comment->likers()->detach($user->id);
+    $comment->likers()->detach($userId);
 
-    return back()->with('success', 'Comment unliked successfully!');
+    return back();
 }
+
 }

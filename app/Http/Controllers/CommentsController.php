@@ -100,4 +100,18 @@ class CommentsController extends Controller
             return $predictedClass === 1 ? 'possibly depressive' : 'possibly non-depressive';
         }
 
+        public function destroy(Comment $comment)
+{
+    $user = Auth::user();
+    Log::info('Destroy method called by user: ' . $user->id . ' with role: ' . $user->role->name);
+
+    if (!$user || !in_array($user->role->name, ['administrator', 'moderator'])) {
+        return back()->with('error', 'You do not have permission to delete this comment.');
+    }
+
+    $comment->delete();
+    return back()->with('success', 'Comment deleted successfully.');
+}
+
+
 }

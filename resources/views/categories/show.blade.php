@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container">
+    {{-- Information note about respect and kindness --}}
+    <div style="background-color: #fff3cd; border-left: 4px solid #ffeeba; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
+        <strong>Note:</strong> Let's treat each other with respect and kindness. This is a community where everyone's voice is valued. Please engage thoughtfully and refrain from any behavior that could be harmful or disrespectful to others.
+    </div>
+
     <h1 style="color: #3490dc;">{{ $category->name }}</h1>
     <p>{{ $category->description }}</p>
     
