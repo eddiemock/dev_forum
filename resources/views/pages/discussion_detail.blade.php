@@ -85,8 +85,35 @@
                                 <i class="fas fa-thumbs-down"></i> Unlike
                             </button>
                         </form>
-
-                        <button type="button" class="btn btn-outline-secondary btn-sm report-btn" data-toggle="modal" data-target="#reportModal" data-comment-id="{{ $comment->id }}">Report</button>
+                        {{-- Report Comment Modal for each comment --}}
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#reportModal-{{ $comment->id }}">
+                            Report
+                        </button>
+                        <div class="modal fade" id="reportModal-{{ $comment->id }}" tabindex="-1" aria-labelledby="reportModalLabel-{{ $comment->id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="reportModalLabel-{{ $comment->id }}">Report Comment</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="POST" action="{{ route('report.comment', ['comment' => $comment->id]) }}"> 
+                                        @csrf
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="reason-{{ $comment->id }}">Reason for Reporting:</label>
+                                                <textarea class="form-control" id="reason-{{ $comment->id }}" name="reason" required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Submit Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </li>
             @endforeach      

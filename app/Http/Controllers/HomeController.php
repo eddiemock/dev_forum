@@ -13,7 +13,7 @@ use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Models\SupportGroup;
 use App\Models\Role;
-
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -38,7 +38,7 @@ class HomeController extends Controller
     
         // Prepare credentials
         $credentials = $request->only('email', 'password');
-    
+        
         // Attempt to authenticate without directly logging in
         if (Auth::validate($credentials)) {
             $user = Auth::getLastAttempted();
@@ -64,6 +64,19 @@ class HomeController extends Controller
                 return back()->withErrors([
                     'email' => 'You need to verify your email address before you can log in.',
                 ]);
+            }
+
+
+            if ($user) {
+                // Check for recent password reset request
+                $tokenExists = DB::table('password_resets')->where('email', $user->email)
+                                ->where('created_at', '>=', now()->subHours(24))->exists(); // Check last 24 hours for simplicity
+        
+                if ($tokenExists) {
+                    return back()->withErrors([
+                        'email' => 'A password reset request is pending. Please check your email or wait 24 hours to request a new link.',
+                    ]);
+                }
             }
         }
     

@@ -33,5 +33,9 @@ public function likers()
     {
         return $this->belongsTo(Discussion::class);
     }
+    public function reports()
+{
+    return $this->morphMany(Report::class, 'reportable');
+}
 
 }

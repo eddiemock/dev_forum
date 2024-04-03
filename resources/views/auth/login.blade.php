@@ -21,7 +21,10 @@
             </div>
 
             <button type="submit" class="btn btn-primary">{{ __('profile.Submit') }}</button>
-        </form>
+
+            <div class="form-group">
+                <a href="{{ route('password.request') }}">Forgot Your Password?</a>
+            </div>
 
     </div>
 @endsection

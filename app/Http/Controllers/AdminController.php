@@ -30,9 +30,11 @@ class AdminController extends Controller
 
     // This retrieves all users, which might be used for other purposes in the dashboard
     $users = User::all();
+
+    $reportedComments = Comment::whereHas('reports')->with('user', 'reports')->get();
     $roles = Role::all();
 
-    return view('admin.dashboard', compact('usersWithFlaggedComments', 'users', 'roles'));
+    return view('admin.dashboard', compact('usersWithFlaggedComments', 'users', 'roles', 'reportedComments'));
 }
 
     
