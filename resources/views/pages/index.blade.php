@@ -31,6 +31,9 @@
                 <div class="modal-body">
                     <p>Topic: {{ $group->topic }}</p>
                     <p>Scheduled for: {{ $group->scheduled_at->format('F d, Y h:i A') }}</p>
+                    @if($group->location)
+                        <p>Location: {{ $group->location }}</p>
+                    @endif
                     <p>{{ $group->description }}</p>
                 </div>
                 <div class="modal-footer">

@@ -71,6 +71,7 @@ Route::get('/user/{id}/profile', [ProfileController::class, 'showProfile'])->nam
 Route::get('/admin/user/{userId}/comments', [AdminController::class, 'getUserComments'])->name('admin.user.comments');
 Route::post('/support_groups/{groupId}/register', [SupportGroupController::class, 'register'])->name('support_groups.register');
 Route::delete('/support_groups/{groupId}/leave', [SupportGroupController::class, 'leave'])->name('support_groups.leave');
+Route::put('/support_groups/{id}/update', [SupportGroupController::class, 'update'])->name('support_groups.update');
 Route::post('/comments/{comment}/report', [ReportController::class, 'reportComment'])->name('report.comment');
 
 

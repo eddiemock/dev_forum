@@ -23,20 +23,20 @@ class SupportGroupController extends Controller
         return view('support_groups.create');
     }
 
-    // Store a newly created support group in storage.
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'topic' => 'required|string|max:255',
-            'scheduled_at' => 'required|date',
-            'description' => 'nullable|string',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'topic' => 'required|string|max:255',
+        'scheduled_at' => 'required|date',
+        'description' => 'nullable|string',
+        'location' => 'nullable|string|max:255', // Add this line
+    ]);
 
-        SupportGroup::create($request->all());
+    SupportGroup::create($request->all());
 
-        return redirect()->route('support_groups.index')->with('success', 'Support group created successfully.');
-    }
+    return redirect()->route('support_groups.index')->with('success', 'Support group created successfully.');
+}
 
     public function register(Request $request, $groupId)
 {
@@ -74,6 +74,23 @@ public function leave(Request $request, $groupId)
       ->delete();
 
     return back()->with('success', 'You have successfully left the support group.');
+}
+
+public function update(Request $request, $id)
+{
+    $group = SupportGroup::findOrFail($id);
+
+    $fieldsToUpdate = $request->validate([
+        'name' => 'sometimes|string|max:255',
+        'topic' => 'sometimes|string|max:255',
+        'scheduled_at' => 'sometimes|date',
+        'description' => 'nullable|string',
+        'location' => 'nullable|string|max:255',
+    ]);
+
+    $group->update($fieldsToUpdate);
+
+    return redirect()->route('support_groups.index')->with('success', 'Support group updated successfully.');
 }
 
 }

@@ -1,6 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+.support-group ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.support-group ul li {
+    background-color: #f8f9fa; /* Light grey background */
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.support-group ul li:hover {
+    background-color: #e9ecef; /* Slightly darker grey on hover */
+}
+
+.card-body h5, .card-body h6 {
+    color: #007bff; /* Bootstrap primary color for titles */
+}
+</style>
 <div class="container mt-5 admin-dashboard">
     <h1 class="mb-4">Admin Dashboard</h1>
 
@@ -156,9 +177,87 @@
                 @endforelse
             </div>
         </div>
+        <div class="col-md-6 mb-4">
+    @foreach($supportGroups as $group)
+        <div class="card support-group mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ $group->name }} ({{ $group->topic }})</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Scheduled for: {{ $group->scheduled_at->format('F d, Y h:i A') }}</h6>
+                <p class="card-text">Location: {{ $group->location }}</p>
+                <p class="card-text">Description: {{ $group->description }}</p>
+                <p class="card-text">
+                    <strong>Registered Users:</strong>
+                    @if($group->users->isEmpty())
+                        No users have registered for this group yet.
+                    @else
+                        <ul>
+                            @foreach($group->users as $user)
+                                <li>{{ $user->name }} ({{ $user->email }})</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </p>
+                
+                <!-- Trigger Modal Button -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editSupportGroupModal-{{ $group->id }}">
+                    Edit Details
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Structure -->
+       <!-- Modal Structure -->
+<div class="modal fade" id="editSupportGroupModal-{{ $group->id }}" tabindex="-1" aria-labelledby="editSupportGroupModalLabel-{{ $group->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSupportGroupModalLabel-{{ $group->id }}">Edit Support Group</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('support_groups.update', $group->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <!-- Group Name -->
+                    <div class="mb-3">
+                        <label for="name-{{ $group->id }}" class="form-label">Group Name</label>
+                        <input type="text" class="form-control" id="name-{{ $group->id }}" name="name" value="{{ $group->name }}" required>
+                    </div>
+                    <!-- Topic -->
+                    <div class="mb-3">
+                        <label for="topic-{{ $group->id }}" class="form-label">Topic</label>
+                        <input type="text" class="form-control" id="topic-{{ $group->id }}" name="topic" value="{{ $group->topic }}" required>
+                    </div>
+                    <!-- Scheduled At -->
+                    <div class="mb-3">
+                        <label for="scheduled_at-{{ $group->id }}" class="form-label">Scheduled At</label>
+                        <input type="datetime-local" class="form-control" id="scheduled_at-{{ $group->id }}" name="scheduled_at" value="{{ $group->scheduled_at->format('Y-m-d\TH:i') }}" required>
+                    </div>
+                    <!-- Location -->
+                    <div class="mb-3">
+                        <label for="location-{{ $group->id }}" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location-{{ $group->id }}" name="location" value="{{ $group->location }}">
+                    </div>
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label for="description-{{ $group->id }}" class="form-label">Description</label>
+                        <textarea class="form-control" id="description-{{ $group->id }}" name="description">{{ $group->description }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
+    @endforeach
+</div>
+
+    </div>
+</div>
 @endsection
 
 @section('scripts')

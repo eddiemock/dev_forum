@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MentalHealthSupportMail;
 use App\Models\Role;
+use App\Models\SupportGroup;
 
 class AdminController extends Controller
 {
@@ -33,8 +34,9 @@ class AdminController extends Controller
 
     $reportedComments = Comment::whereHas('reports')->with('user', 'reports')->get();
     $roles = Role::all();
+    $supportGroups = SupportGroup::with('users')->orderBy('scheduled_at', 'desc')->get();
 
-    return view('admin.dashboard', compact('usersWithFlaggedComments', 'users', 'roles', 'reportedComments'));
+    return view('admin.dashboard', compact('usersWithFlaggedComments', 'users', 'roles', 'reportedComments', 'supportGroups'));
 }
 
     
