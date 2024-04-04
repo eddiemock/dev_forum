@@ -32,62 +32,61 @@ class HomeController extends Controller
     }
 
     public function confirm_login(Request $request)
-    {
-        // Log that we've entered the method
-        Log::info('Attempting to login', ['email' => $request->email]);
-    
-        // Prepare credentials
-        $credentials = $request->only('email', 'password');
-        
-        // Attempt to authenticate without directly logging in
-        if (Auth::validate($credentials)) {
-            $user = Auth::getLastAttempted();
-    
-            // Check if the user's email is verified
-            if ($user->email_verified_at !== null) {
-                // Log successful authentication
-                Log::info('Authentication successful', ['email' => $request->email]);
-    
-                // Manually log in the user
-                Auth::login($user, $request->filled('remember'));
-    
-                // Regenerate the session to protect against session fixation attacks
-                $request->session()->regenerate();
-    
-                // Redirect to intended page or default to dashboard
-                return redirect()->intended('/');
-            } else {
-                // Log failed authentication attempt due to unverified email
-                Log::warning('Authentication failed - email not verified', ['email' => $request->email]);
-    
-                // Redirect back with error
+{
+    // Log the attempt to login
+    Log::info('Attempting to login', ['name' => $request->input('name')]);
+
+    // Prepare credentials using name
+    $credentials = ['name' => $request->input('name'), 'password' => $request->input('password')];
+
+    // Attempt to authenticate without directly logging in
+    if (Auth::attempt($credentials, $request->filled('remember'))) {
+        $user = Auth::user();
+
+        // Check if the user's email is verified
+        if ($user->email_verified_at !== null) {
+
+            // Check for a recent password reset request before logging the user in
+            $tokenExists = DB::table('password_resets')->where('email', $user->email)
+                            ->where('created_at', '>=', now()->subHours(24))->exists();
+
+            if ($tokenExists) {
+                // Inform the user about the pending password reset request
                 return back()->withErrors([
-                    'email' => 'You need to verify your email address before you can log in.',
+                    'name' => 'A password reset request is pending. Please check your email or wait 24 hours to request a new link.',
                 ]);
             }
 
+            // Log successful authentication
+            Log::info('Authentication successful', ['name' => $request->input('name')]);
 
-            if ($user) {
-                // Check for recent password reset request
-                $tokenExists = DB::table('password_resets')->where('email', $user->email)
-                                ->where('created_at', '>=', now()->subHours(24))->exists(); // Check last 24 hours for simplicity
-        
-                if ($tokenExists) {
-                    return back()->withErrors([
-                        'email' => 'A password reset request is pending. Please check your email or wait 24 hours to request a new link.',
-                    ]);
-                }
-            }
+            // Regenerate the session to protect against session fixation attacks
+            $request->session()->regenerate();
+
+            // Redirect to intended page or default to dashboard
+            return redirect()->intended('/');
+        } else {
+            // Log failed authentication attempt due to unverified email
+            Log::warning('Authentication failed - email not verified', ['name' => $request->input('name')]);
+
+            // Redirect back with error
+            return back()->withErrors([
+                'name' => 'You need to verify your email address before you can log in.',
+            ]);
         }
-    
+    } else {
         // Log failed authentication attempt
-        Log::warning('Authentication failed', ['email' => $request->email]);
-    
+        Log::warning('Authentication failed', ['name' => $request->input('name')]);
+
         // Redirect back with error
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'name' => 'The provided credentials do not match our records.',
         ]);
     }
+}
+
+
+
 
     public function register()
     {

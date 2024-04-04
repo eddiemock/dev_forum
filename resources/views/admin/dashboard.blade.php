@@ -81,6 +81,29 @@
             </form>
         </div>
         <div class="col-md-4 mb-4">
+            <h2>Invite User to Support Group</h2>
+            <form method="POST" action="{{ route('admin.sendSupportGroupInvitation') }}">
+                @csrf
+                <div class="form-group">
+                    <label for="user_id">Select User:</label>
+                    <select id="user_id" name="user_id" class="form-control">
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="support_group_id">Select Support Group:</label>
+                    <select id="support_group_id" name="support_group_id" class="form-control">
+                        @foreach($supportGroups as $group)
+                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-warning">Send Invitation</button>
+            </form>
+        </div>
+        <div class="col-md-4 mb-4">
             <h2>Add New Category</h2>
             <form method="POST" action="{{ route('admin.categories.store') }}" class="create-category-form">
                 @csrf

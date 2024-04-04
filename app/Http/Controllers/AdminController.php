@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\MentalHealthSupportMail;
 use App\Models\Role;
 use App\Models\SupportGroup;
+use App\Mail\SupportGroupInvitationMail;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -106,6 +108,26 @@ public function showAssignRoleForm()
         return redirect()->back()->with('error', 'User already has the selected role.');
     }
 }
+public function sendInvitationEmail(Request $request)
+{
+    // Retrieve user_id and support_group_id from the request
+    $userId = $request->input('user_id');
+    $supportGroupId = $request->input('support_group_id');
+
+    // Correctly find the user and support group based on the provided IDs
+    $user = User::findOrFail($userId);
+    $supportGroup = SupportGroup::findOrFail($supportGroupId);
+    Log::info('User Object', [$user->toArray()]);
+    Log::info('Support Group Object', [$supportGroup->toArray()]);
+    
+    // Ensure the order of parameters matches the constructor of SupportGroupInvitationMail
+    // First parameter should be User, second should be SupportGroup
+    Mail::to($user->email)->send(new SupportGroupInvitationMail($user, $supportGroup));
+    
+    // Redirect back with a success message
+    return back()->with('message', 'Invitation sent successfully.');
+}
+
 }
 
 

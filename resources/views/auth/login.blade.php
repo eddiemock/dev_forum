@@ -8,11 +8,9 @@
         <form action="/login" method="POST">
             <div class="form-group">
                 @csrf
-                <label for="exampleInputEmail1">{{ __('profile.Email address') }}</label>
-                <input type="email" class="form-control" name="email" aria-describedby="emailHelp"
-                    placeholder="Enter email">
-                <span class="text-danger">@error('email'){{ $message }} @enderror</span>
-
+                <label for="name">{{ __('profile.Username') }}</label>
+                <input type="text" class="form-control" name="name" aria-describedby="nameHelp" placeholder="Enter name">
+                <span class="text-danger">@error('name'){{ $message }} @enderror</span>
             </div>
             <div class="form-group">
                 <label for="exampleInputPassword1">{{ __('profile.Password') }}</label>
@@ -25,6 +23,8 @@
             <div class="form-group">
                 <a href="{{ route('password.request') }}">Forgot Your Password?</a>
             </div>
+        </form>
+
 
     </div>
 @endsection

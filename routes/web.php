@@ -88,12 +88,15 @@ Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function 
     Route::get('/admin/users/assign-role', [App\Http\Controllers\AdminController::class, 'showAssignRoleForm'])->name('admin.users.assign-role');
     Route::post('/admin/users/assign-role', [App\Http\Controllers\AdminController::class, 'assignRole'])->name('admin.users.assign-role.post');
     Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/admin/send-support-group-invitation', [AdminController::class, 'sendInvitationEmail'])->name('admin.sendSupportGroupInvitation');
+
 });
 
 
 Route::get('/moderate', function () {
     
 })->middleware('checkRole:moderator,administrator');
+    Route::delete('/comments/{comment}', [CommentsController::class, 'destroy'])->name('comments.destroy');
 });
 
 
