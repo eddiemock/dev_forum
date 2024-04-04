@@ -23,39 +23,34 @@ class CommentsController extends Controller
     }
 
     public function store(Request $request, Discussion $discussion)
-    {
-        if (!$discussion) {
-            return back()->withErrors(['message' => 'Discussion not found.']);
-        }
+{
+    if (!$discussion) {
+        return back()->withErrors(['message' => 'Discussion not found.']);
+    }
 
-        $userId = Auth::id();
-        $commentText = $request->input('body');
+    $userId = Auth::id();
+    $commentText = $request->input('body');
 
-        $moderationResult = $this->needsReview($commentText);
-        $needsReview = $moderationResult['flagged'];
+    $moderationResult = $this->needsReview($commentText);
+    $needsReview = $moderationResult['flagged'];
 
-        // Use FastAPIService to get predictions and log the response
-        $fastAPIResponse = $this->fastAPIService->predict($commentText);
+    // Use FastAPIService to get predictions and log the response
+    $fastAPIResponse = $this->fastAPIService->predict($commentText);
 
     $depressiveClassification = 0; // Default to 'possibly non-depressive'
 
-    // Check if 'probabilities' key exists in the response and has at least 2 elements
     if (isset($fastAPIResponse['probabilities']) && count($fastAPIResponse['probabilities']) >= 2) {
-        // Determine which probability is higher
         $predictedClass = array_search(max($fastAPIResponse['probabilities']), $fastAPIResponse['probabilities']);
         $predictionDescription = $this->interpretPrediction($predictedClass);
 
-        // Update depressive_classification based on predicted class
         $depressiveClassification = $predictedClass === 1 ? 1 : 0;
 
-        // Log the descriptive prediction result
         Log::info('FastAPI Prediction Result', [
             'request' => $commentText,
             'predicted_class_description' => $predictionDescription,
             'response' => $fastAPIResponse
         ]);
     } else {
-        // Handle case where probabilities are not provided or not as expected
         Log::error('Probabilities missing or insufficient in FastAPI response.', [
             'request' => $commentText,
             'response' => $fastAPIResponse
@@ -69,19 +64,18 @@ class CommentsController extends Controller
     $comment->user_id = $userId;
     $comment->flagged_categories = $needsReview ? json_encode($moderationResult['categories']) : null;
     $comment->flagged = $needsReview ? 1 : 0;
-    $comment->depressive_classification = $depressiveClassification; // Set classification
+    $comment->depressive_classification = $depressiveClassification;
     $comment->save();
 
-        // If the comment is flagged, notify admins
-        if ($needsReview) {
-            $flaggedCategories = $moderationResult['categories']; // Get flagged categories
-            Mail::to('admin@example.com')->send(new CommentFlaggedMail($comment, $flaggedCategories));
-            return back()->withErrors(['message' => 'Your comment is under review.']);
-        }
-
-        // For both flagged and non-flagged comments, redirect back with a success message
-        return back()->with('message', 'Your comment has been posted successfully.');
+    // If the comment is flagged, notify admins but still post the comment
+    if ($needsReview) {
+        Mail::to('admin@example.com')->send(new CommentFlaggedMail($comment, $moderationResult['categories']));
     }
+
+    // Redirect back with a success message, regardless of the comment's moderation status
+    return back()->with('message', 'Your comment has been posted successfully.');
+}
+
 
     private function needsReview($text)
     {
