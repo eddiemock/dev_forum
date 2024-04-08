@@ -54,5 +54,30 @@
             <li><a href="https://www.nhs.uk/conditions/stress-anxiety-depression/">NHS: Mental Health</a></li>
         </ul>
     </section>
+    <section>
+        <h2>Book an Appointment</h2>
+        <form action="{{ route('appointments.store') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="professional_id">Select Professional:</label>
+                <select id="professional_id" name="professional_id" class="form-control">
+                    {{-- Assume you pass a $professionals variable to the view --}}
+                    @foreach($professionals as $professional)
+                        <option value="{{ $professional->id }}">{{ $professional->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="appointment_time">Appointment Time:</label>
+                <input type="datetime-local" id="appointment_time" name="appointment_time" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes (optional):</label>
+                <textarea id="notes" name="notes" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Book Appointment</button>
+        </form>
+    </section>
+
 </div>
 @endsection

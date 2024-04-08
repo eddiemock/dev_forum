@@ -51,7 +51,7 @@
             padding-top: 20px;
         }
         .navbar {
-            background-color: #1176e1;
+            background-color: #5F0D4C;
         }
         .navbar-brand, .nav-link {
             color: #495057 !important;

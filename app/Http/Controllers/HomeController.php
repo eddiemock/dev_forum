@@ -14,15 +14,16 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\SupportGroup;
 use App\Models\Role;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Appointment;
 class HomeController extends Controller
 {
     public function index()
 {
-    $categories = Category::all(); // Existing code
-    $supportGroups = SupportGroup::orderBy('scheduled_at', 'desc')->get(); // Fetch support groups
-
-    return view('pages.index', compact('categories', 'supportGroups'));
+    $user = auth()->user(); 
+    $categories = Category::all();
+    $supportGroups = SupportGroup::orderBy('scheduled_at', 'desc')->paginate(10); // Fetch support groups with pagination
+    $appointments = $user->appointments()->with('professional')->get();
+    return view('pages.index', compact('categories', 'supportGroups', 'appointments'));
 }
 
     public function login()

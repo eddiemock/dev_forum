@@ -69,5 +69,11 @@ public function supportGroups()
 {
     return $this->belongsToMany(SupportGroup::class)->withTimestamps();
 }
+
+public function appointments()
+    
+{
+        return $this->hasMany(Appointment::class);
+    }
 }
 

@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportGroupController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AppointmentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -73,7 +74,8 @@ Route::post('/support_groups/{groupId}/register', [SupportGroupController::class
 Route::delete('/support_groups/{groupId}/leave', [SupportGroupController::class, 'leave'])->name('support_groups.leave');
 Route::put('/support_groups/{id}/update', [SupportGroupController::class, 'update'])->name('support_groups.update');
 Route::post('/comments/{comment}/report', [ReportController::class, 'reportComment'])->name('report.comment');
-
+Route::post('/appointments/store', [AppointmentController::class, 'store'])->name('appointments.store');
+Route::post('/appointments/{appointment}/cancel', [AppointmentController::class, 'cancelAppointment'])->name('appointments.cancel');
 
 
 Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function () {
