@@ -19,12 +19,23 @@ class HomeController extends Controller
 {
     public function index()
 {
-    $user = auth()->user(); 
     $categories = Category::all();
     $supportGroups = SupportGroup::orderBy('scheduled_at', 'desc')->paginate(10); // Fetch support groups with pagination
-    $appointments = $user->appointments()->with('professional')->get();
+
+    // Check if the user is authenticated
+    if (auth()->check()) {
+        // User is authenticated, retrieve their appointments
+        $user = auth()->user();
+        $appointments = $user->appointments()->with('professional')->get();
+    } else {
+        // User is not authenticated, appointments will be empty
+        $appointments = collect();
+    }
+
     return view('pages.index', compact('categories', 'supportGroups', 'appointments'));
 }
+
+
 
     public function login()
     {
