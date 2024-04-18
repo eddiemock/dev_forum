@@ -108,12 +108,11 @@ class HomeController extends Controller
 
     public function register_confirm(Request $request)
 {
-    // Validate the request data
     $validatedData = $request->validate([
         'name' => ['required', 'string', 'max:255', 'unique:users'],
         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
         'password' => ['required', 'string', 'min:8', 'confirmed'],
-        'country' => ['required', 'string', 'max:255'],
+        'consent' => ['required', 'accepted'],  // Validate that consent is given
     ]);
 
     
@@ -121,7 +120,6 @@ class HomeController extends Controller
         'name' => $validatedData['name'],
         'email' => $validatedData['email'],
         'password' => Hash::make($validatedData['password']),
-        'country' => $validatedData['country'],
         'verification_token' => Str::random(60),
     ]);
     
