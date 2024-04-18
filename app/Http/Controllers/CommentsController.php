@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CommentFlaggedMail;
 use Illuminate\Support\Facades\Log;
+use App\Models\Role;
+use App\Models\User;
+
 
 class CommentsController extends Controller
 {
@@ -97,15 +100,20 @@ class CommentsController extends Controller
         public function destroy(Comment $comment)
 {
     $user = Auth::user();
-    Log::info('Destroy method called by user: ' . $user->id . ' with role: ' . $user->role->name);
 
-    if (!$user || !in_array($user->role->name, ['administrator', 'moderator'])) {
-        return back()->with('error', 'You do not have permission to delete this comment.');
+    // Check if the user is authenticated and has a role
+    if (!$user) {
+        return back()->with('error', 'You must be logged in to delete a comment.');
     }
 
-    $comment->delete();
-    return back()->with('success', 'Comment deleted successfully.');
-}
+    // Check if the user is an admin, moderator, or the comment owner
+    if ($user->isAdmin() || $user->isModerator() || $user->id === $comment->user_id) {
+        $comment->delete();
+        return back()->with('success', 'Comment deleted successfully.');
+    }
 
+    // If none of the above conditions are met, the user doesn't have permission
+    return back()->with('error', 'You do not have permission to delete this comment.');
+}
 
 }

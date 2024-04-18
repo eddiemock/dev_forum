@@ -64,35 +64,34 @@
         margin: 20px 0;
     }
 </style>
+@section('content')
 <div class="container">
     <h1>{{ $user->name }}'s Profile</h1>
     <hr>
 
     <h2>Comments on Discussions</h2>
     @php
-    $commentsByDiscussion = $user->comments->groupBy('discussion_id');
+    $commentsByDiscussion = $user->comments->groupBy('discussion.post_title');
     @endphp
 
-    @forelse ($commentsByDiscussion as $discussionId => $comments)
-        @php
-        $discussion = $comments->first()->discussion; // Assuming the relationship is loaded
-        @endphp
-        <div>
-            <a href="#discussionComments{{ $discussionId }}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="discussionComments{{ $discussionId }}">
-                {{ $discussion->post_title }}
-            </a>
-            <div class="collapse" id="discussionComments{{ $discussionId }}">
-                <div class="card card-body">
-                    @foreach ($comments as $comment)
-                        <p>{{ $comment->body }} - <small>Commented on: {{ $comment->created_at->format('m/d/Y') }}</small></p>
-                    @endforeach
-                </div>
+    @forelse ($commentsByDiscussion as $discussionTitle => $comments)
+    <div>
+        <a href="#discussionComments{{ $comments[0]->discussion_id }}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="discussionComments{{ $comments[0]->discussion_id }}">
+            {{ $discussionTitle }}
+        </a>
+        <div class="collapse" id="discussionComments{{ $comments[0]->discussion_id }}">
+            <div class="card card-body">
+                @foreach ($comments as $comment)
+                    <p>{{ $comment->body }} - <small>Commented on: {{ $comment->created_at->format('m/d/Y') }}</small></p>
+                @endforeach
             </div>
         </div>
+    </div>
     @empty
         <p>No comments posted yet.</p>
     @endforelse
 </div>
+
 <div class="container">
     <h2>My Support Groups</h2>
     @forelse ($user->supportGroups as $group)
@@ -110,6 +109,34 @@
     @empty
         <p class="no-content">You haven't joined any support groups yet.</p>
     @endforelse
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProfileModal">
+        Delete My Profile
+    </button>
 </div>
+
+    <!-- Modal -->  
+    <div class="modal fade" id="deleteProfileModal" tabindex="-1" role="dialog" aria-labelledby="deleteProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteProfileModalLabel">Confirm Profile Deletion</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            Are you sure you want to delete your profile and all associated data? This action cannot be undone.
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <form method="POST" action="{{ route('user.delete', $user->id) }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger">Delete Profile</button>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
 @endsection
 

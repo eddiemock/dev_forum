@@ -68,7 +68,7 @@ Route::post('/comments/{comment}/unlike', [LikeController::class, 'unlike'])->na
 Route::post('/update_post',[DiscussionController::class,'update_post']);
 Route::get('logout', [HomeController::class, 'logout'])->name('logout');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
-Route::get('/user/{id}/profile', [ProfileController::class, 'showProfile'])->name('pages.profile');
+Route::get('/user/{id}/profile', [ProfileController::class, 'showUserProfile'])->name('pages.profile');
 Route::get('/admin/user/{userId}/comments', [AdminController::class, 'getUserComments'])->name('admin.user.comments');
 Route::post('/support_groups/{groupId}/register', [SupportGroupController::class, 'register'])->name('support_groups.register');
 Route::delete('/support_groups/{groupId}/leave', [SupportGroupController::class, 'leave'])->name('support_groups.leave');
@@ -76,6 +76,7 @@ Route::put('/support_groups/{id}/update', [SupportGroupController::class, 'updat
 Route::post('/comments/{comment}/report', [ReportController::class, 'reportComment'])->name('report.comment');
 Route::post('/appointments/store', [AppointmentController::class, 'store'])->name('appointments.store');
 Route::post('/appointments/{appointment}/cancel', [AppointmentController::class, 'cancelAppointment'])->name('appointments.cancel');
+Route::delete('/user/{id}/profile', [HomeController::class, 'destroy'])->name('user.delete');
 
 
 Route::middleware(['checkRole:administrator'])->prefix('admin')->group(function () {

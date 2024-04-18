@@ -62,9 +62,9 @@
                             {{ $comment->body }}
                             <p>Likes: {{ $comment->likers_count }}</p>
                     </div>
-                    {{-- "Delete" button visible only to admins and moderators --}}
-                         @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isModerator()))
-                         <form action="{{ route('comments.destroy', $comment->id) }}" method="POST">
+                    {{-- "Delete" button visible to admins, moderators, and comment owner --}}
+                        @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isModerator() || auth()->user()->id === $comment->user_id))
+                            <form action="{{ route('comments.destroy', $comment->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>

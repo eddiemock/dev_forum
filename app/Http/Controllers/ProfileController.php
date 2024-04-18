@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
-    public function showProfile($id)
-    {
-        $user = User::with(['discussions', 'comments', 'comments.discussion'])->findOrFail($id);
-        
-        return view('pages.profile', compact('user'));
-    }
+    public function showUserProfile($userId)
+{
+    $user = User::with(['comments.discussion' => function($query) {
+        $query->distinct()->with('comments'); // Ensure distinct discussions and load comments
+    }])->findOrFail($userId);
+
+    return view('pages.profile', compact('user'));
+}
 }

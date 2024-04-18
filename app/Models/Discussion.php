@@ -14,7 +14,16 @@ class Discussion extends Model
     protected $fillable = ['post_title', 'description', 'brief', 'user_id', 'category_id'];
 
     
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::deleting(function ($discussion) {
+            $discussion->comments()->delete();
+            $discussion->likes()->detach();
+            $discussion->tags()->detach();
+        });
+    }
     public function user(){
         return $this->belongsTo(User::class);
     }

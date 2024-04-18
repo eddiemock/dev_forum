@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Discussion;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -22,6 +24,26 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function discussions(){
         return $this->hasMany(Discussion::class);
+    }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            // Delete all related comments
+            $user->comments()->delete();
+            
+            // Delete all related discussions
+            $user->discussions()->each(function ($discussion) {
+                $discussion->delete();  // Ensure Discussion model handles its relationships
+            });
+
+            // Handle likes, reports, appointments, and support groups
+            $user->likes()->detach();
+            $user->reports()->delete();
+            $user->appointments()->delete();
+            $user->supportGroups()->detach();
+        });
     }
 
 
@@ -75,5 +97,9 @@ public function appointments()
 {
         return $this->hasMany(Appointment::class);
     }
+ public function reports()
+{
+    return $this->hasMany(Report::class);
+}
 }
 

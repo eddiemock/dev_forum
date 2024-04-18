@@ -51,9 +51,6 @@
         </form>
     </div>
 
-    <!-- Consent Modal -->
-    <!-- Consent Modal -->
-    <!-- Consent Modal -->
     <div class="modal fade" id="consentModal" tabindex="-1" role="dialog" aria-labelledby="consentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">  <!-- Using modal-lg for larger modal -->
         <div class="modal-content">
@@ -102,7 +99,4 @@
         </div>
     </div>
 </div>
-
-
-
 @endsection

@@ -29,10 +29,11 @@ public function likers()
     return $this->belongsToMany(User::class, 'likes_table', 'comment_id', 'user_id')->withTimestamps();
 }
 
-    public function discussion()
-    {
-        return $this->belongsTo(Discussion::class);
-    }
+public function discussion()
+{
+    return $this->belongsTo(Discussion::class);
+}
+
     public function reports()
 {
     return $this->morphMany(Report::class, 'reportable');

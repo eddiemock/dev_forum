@@ -161,4 +161,47 @@ class HomeController extends Controller
     
         return view('pages.dashboard', compact('discussions'));
     }
+
+    public function destroy($id)
+{
+    // Retrieve the user to be deleted
+    $userToDelete = User::findOrFail($id);
+
+    // Check if the user is deleting their own profile or if they are an admin
+    if (Auth::id() !== $userToDelete->id && !Auth::user()->isAdmin()) {
+        return redirect()->back()->with('error', 'You do not have permission to perform this action.');
+    }
+
+    // Begin the transaction to handle deletion of related data
+    DB::transaction(function () use ($userToDelete) {
+        // Detach any many-to-many relationships to avoid orphaned rows
+        $userToDelete->likes()->detach();
+        $userToDelete->supportGroups()->detach();
+
+        // Delete related data
+        $userToDelete->comments()->delete();
+        $userToDelete->appointments()->delete();
+        
+        // If the user has discussions, they need to be handled as well
+        $userToDelete->discussions()->each(function ($discussion) {
+            $discussion->comments()->delete(); // Delete all comments on the discussion
+            $discussion->delete(); // Delete the discussion itself
+        });
+
+        // Finally, delete the user
+        $userToDelete->delete();
+    });
+
+    // If the user deleted their own profile, log them out
+    if (Auth::id() === $userToDelete->id) {
+        Auth::logout();
+        session()->invalidate();
+        session()->regenerateToken();
+        return redirect('/')->with('success', 'Your profile has been deleted successfully.');
+    }
+
+    // Redirect to a list of users or some other page as the admin remains logged in
+    return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+}
+
 }
