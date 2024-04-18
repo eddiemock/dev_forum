@@ -102,9 +102,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('pages.profile', ['id' => auth()->user()->id]) }}">Profile</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.dashboard') }}">{{ __('Admin Dashboard') }}</a>
-                    </li>
+                    @if(auth()->user()->isAdmin())
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('admin.dashboard') }}">{{ __('Admin Dashboard') }}</a>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
